@@ -1,5 +1,6 @@
 from datetime import datetime, date
-from typing import Optional
+from typing import Any, Optional, Union
+from pydantic import BaseModel
 from sqlmodel import Relationship, Field, SQLModel, create_engine, Session, select
 
 # ------------------------------------- #
@@ -26,6 +27,8 @@ class UserBookLinkInDB(SQLModel, table=True):
 
     user_id: int = Field(foreign_key="users.id", primary_key=True)
     book_id: int = Field(foreign_key="books.id", primary_key=True)
+
+    start_date: Optional[datetime]
 
     # book: "BookInDB" = Relationship(back_populates="users")
     # user: "UserInDB" = Relationship(back_populates="books")
@@ -88,6 +91,9 @@ class AuthorInDB(SQLModel, table=True):
                                            link_model=BookAuthorLinkInDB) # Specifies the Join table
 
 class GoalInDB(SQLModel, table=True):
+
+    __tablename__ = "goals"
+
     start_date: Optional[datetime] = None
     current_page: Optional[int] = 0
     finish_date: Optional[datetime] = None
@@ -106,7 +112,7 @@ class GoalInDB(SQLModel, table=True):
 #            Request models             #
 # ------------------------------------- #
 
-class UserRegistration(SQLModel):
+class UserRegistrationRequest(SQLModel):
     """Request model to register a new user."""
 
     first_name: str
@@ -124,66 +130,38 @@ class UserResponse(SQLModel):
     username: str
     email: str
 
+class Author(BaseModel):
+    """Model for an author"""
+
+    name: Optional[str]
+
+class AuthorCollection(BaseModel):
+     """Model for a collection of authors"""
+     
+     authors: Optional[list[Author]]
+
+class Book(BaseModel):
+    """Model for a book"""
+    id: Optional[str]
+    title: Optional[str]
+    subtitle: Optional[str]
+    published: Optional[str]
+    description: Optional[str]
+    page_count: Optional[int]
+    cover_url: Optional[str]
+    authors: Optional[list[Union[str, AuthorInDB]]]
 
 
-# sqlite_file_name = "database.db"
-# sqlite_url = f"sqlite:///{sqlite_file_name}"
-# connect_args = {"check_same_thread": False}
-# engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
+class BookCollectionResponse(BaseModel):
+    """Response model for a collection of books"""
+
+    books: list[Book] = []
 
 
-# def create_db_and_tables():
-#     SQLModel.metadata.create_all(engine)
+class User(BaseModel):
+    """Response model for user"""
 
-# def create_books_and_authors():
-#     jk_rowling = AuthorInDB(name="JK Rowling")
-#     colleen_hoover = AuthorInDB(name="Colleen Hoover")
-
-#     harry_potter1 = BookInDB(id="1rosnkmJ0Ko", title="Harry Potter and the Sorcerer's Stone", published="2013-08-27", description="Rescued from the outrageous neglect of his aunt and uncle, a young boy with a great destiny proves his worth while attending Hogwarts School for Witchcraft and Wizardry.", page_count=336, authors=[jk_rowling])
-#     harry_potter2 = BookInDB(id="5iTebBW-w7QC", title="Harry Potter and the Chamber of Secrets", published="2015-12-08", description="There is a plot, Harry Potter. A plot to make most terrible things happen at Hogwarts School of Witchcraft and Wizardry this year. Harry Potter's summer ... ", page_count=344, authors=[jk_rowling])
-#     harry_potter3 = BookInDB(id="Sm5AKLXKxHgC", title="Harry Potter and the Prisoner of Azkaban", published="2015-12-08", description="Lorem Ipsuum... ", page_count=445, authors=[jk_rowling])
-#     it_ends = BookInDB(id="wmnuDwAAQBAJ", title="It Ends With Us", published="2020-07-28", description="In this “brave and heartbreaking novel that digs its claws ... ", page_count=448, authors=[colleen_hoover])
-
-#     with Session(engine) as session:
-#         session.add(harry_potter1)
-#         session.add(harry_potter2)
-#         session.add(harry_potter3)
-#         session.add(it_ends)
-#         session.commit()
-
-# def create_user():
-#     rachel = UserInDB(username="rachel", first_name="rachel", email="rachel@gmail.com")
-#     with Session(engine) as session:
-#         session.add(rachel)
-#         session.commit()
-
-#         session.refresh(rachel)
-
-# def add_book():
-#     book = BookInDB(id="wmDwAAQBAJ", title="Title", page_count=100)
-#     with Session(engine) as session:
-#         session.add(book)
-#         session.commit()
-
-
-# def add_user_book():
-#     book = BookInDB(id="22", title="Blah", published="2013-08-27", description="Rescued from the outrageous neglect of his aunt and uncle, a young boy with a great destiny proves his worth while attending Hogwarts School for Witchcraft and Wizardry.", page_count=336, authors=[AuthorInDB(name="Smith")])
-#     with Session(engine) as session:
-#         update_user = session.exec(select(UserInDB).where(UserInDB.username=="rachel")).one()
-#         update_user.books.append(book)
-#         session.add(update_user)
-#         session.commit()
-
-
-# def main():  
-#     create_db_and_tables()  
-#     create_books_and_authors()  
-#     create_user()
-#     add_user_book()
-#     # add_book()
-
-
-# if __name__ == "__main__":  
-#     main()  
+    user_id: Optional[int]
+    username: Optional[str]
 
 
