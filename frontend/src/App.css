@@ -1,1 +1,19 @@
+.horizontal-flex-container {
+  display: flex;
+  flex-direction: row;
+}
 
+.vertical-flex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+}

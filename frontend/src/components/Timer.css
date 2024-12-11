@@ -1,0 +1,15 @@
+/* Timer container styling */
+.timer-container {
+  width: 300px;
+  height: 200px;
+  background-color: #f4f4f4; /* Soft light gray background */
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 20px;
+  font-family: "Poppins", sans-serif; /* Modern font */
+  margin: 50px auto;
+}

@@ -1,0 +1,84 @@
+/* Reading Sessions Section */
+.reading-sessions-container {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for a modern touch */
+  /* max-width: 900px; */
+  /* margin: 20px auto; */
+  padding: 20px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.sessions {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 400px;
+  padding-right: 15px; /* Adjust for scrollbar */
+}
+
+.date-section {
+  margin-bottom: 25px;
+}
+
+.date-section h4 {
+  color: #3e5a45; /* Deep earthy green for the date heading */
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.session-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.session-item {
+  background-color: #fff; /* Clean white background for session items */
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Slightly more pronounced shadow */
+  transition: all 0.2s ease-in-out; /* Smooth hover transition */
+}
+
+.session-item:hover {
+  transform: translateY(-5px); /* Subtle hover effect */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.session-title {
+  font-weight: bold;
+  color: #6b4f3a; /* Rich brown color for the title */
+  font-size: 1.2rem;
+}
+
+.session-details {
+  font-size: 14px;
+  color: #7f8c8d; /* Muted grayish color for details */
+  margin-top: 5px;
+}
+
+.session-time {
+  color: #3e5a45; /* Use the same earthy green for time info */
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Scrollbar Customization */
+.sessions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sessions::-webkit-scrollbar-thumb {
+  background-color: #b7a68d; /* Earthy brown for scrollbar thumb */
+  border-radius: 5px;
+}
+
+.sessions::-webkit-scrollbar-track {
+  background-color: #f4f1e1; /* Matching background for the track */
+}

@@ -1,0 +1,95 @@
+.goals-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+  border: 2px solid blue;
+  width: 50%;
+}
+
+.goal-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-circle {
+  width: 20%;
+  color: #d6c9b1;
+}
+
+.goal-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 0.5rem;
+  min-width: auto;
+}
+.goal-period {
+  line-height: 1;
+}
+.period-name {
+  color: #d5793d;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.period-value {
+  color: #d5793d;
+}
+
+.goal-card:hover {
+  transform: translateY(-5px); /* Adding a subtle hover effect */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.daily-goal-container {
+  display: flex; /* Flexbox for internal card content */
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  width: 50%;
+  border: 1px solid brown;
+  height: 100%;
+}
+.daily-goal-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #6b4f3b; /* Warm brown for header text */
+}
+
+.daily-goal-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.daily-goal-text {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.goal-progress {
+  line-height: 1;
+}
+.goal-progress-name {
+  color: #d5793d;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.goal-progress-value {
+  color: #d5793d;
+}
+
+.caps {
+  text-transform: capitalize;
+}

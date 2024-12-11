@@ -1,0 +1,98 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* background-color: #ffdfe5; */
+  background-color: #f2f5fd;
+
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.dashboard-content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.welcome-back-container {
+  display: flex;
+  padding-left: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.welcome-back {
+  padding-right: 0.4rem;
+}
+
+.name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.left {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent child elements from overflowing */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  height: 30%;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 55%;
+  overflow: hidden;
+}
+
+.vertical-flex-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* The container will prevent scrollbars and allow the content to shrink */
+.container {
+  width: 100%;
+  height: 100%; /* Full viewport height */
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+/* The content will shrink as the viewport shrinks */
+.content {
+  width: 80%;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevent scrollbars in content */
+  font-size: calc(1vw + 1vh); /* Shrink font size as viewport shrinks */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.right {
+  padding-left: 0rem;
+  width: 30%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
