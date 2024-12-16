@@ -42,8 +42,6 @@ function SigninPage() {
             <img className="logo" src={logo} alt="Logo" />
           </div>
 
-          {/* <h1>Login</h1> */}
-
           <label htmlFor="username">Username</label>
           <FormInput
             type="text"

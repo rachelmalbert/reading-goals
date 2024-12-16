@@ -20,3 +20,15 @@ const FormInput = ({ setter, ...props }) => {
 };
 
 export default FormInput;
+
+{
+  /* <form onSubmit={onSubmit}>
+  <FormInput type="text" name="username" id="username" setter={setUsername} />
+  <FormInput
+    type="password"
+    name="password"
+    id="password"
+    setter={setPassword}
+  />
+</form>; */
+}

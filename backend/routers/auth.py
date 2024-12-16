@@ -3,7 +3,7 @@ import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import ExpiredSignatureError, JWTError, jwt
+from jose import jwt
 from passlib.context import CryptContext
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -87,7 +87,7 @@ def authenticate_user(session: Session, form: OAuth2PasswordBearer):
 def create_access_token(user: UserInDB):
     expires = int(datetime.now().timestamp()) + JWT_DURATION
     payload = {'sub' : user.username, 'id' : user.id, 'exp' : expires}
-    return jwt.encode(claims=payload, key=JWT_KEY, algorithm=JWT_ALG)
+    return jwt.encode(payload, key=JWT_KEY, algorithm=JWT_ALG)
 
 def get_current_user(session: db_dependency, token: Annotated[str, Depends(oauth2_scheme)]):
     try:
@@ -100,10 +100,11 @@ def get_current_user(session: db_dependency, token: Annotated[str, Depends(oauth
         user = session.get(UserInDB, user_id)
         return  user
         # return {'username' : username, 'user_id' : user_id}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="JWTError")
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="expired signature")
+    except: pass
+    # except JWTError:
+    #     raise HTTPException(status_code=401, detail="JWTError")
+    # except ExpiredSignatureError:
+    #     raise HTTPException(status_code=401, detail="expired signature")
     
     
         

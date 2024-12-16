@@ -29,6 +29,7 @@ engine = create_engine(
 )
 
 def create_db_and_tables():
+    print("Creating database tables...")
     SQLModel.metadata.create_all(engine)
 
 def get_session():
