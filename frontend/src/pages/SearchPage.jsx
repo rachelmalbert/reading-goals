@@ -1,27 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useUser } from "../context/UserContext";
+import { useUser, useApi } from "../hooks";
 import { useState } from "react";
 import FormInput from "../components/FormInput";
 import "./SearchPage.css";
 
 function AddBook({ book }) {
-  const { token } = useAuth();
+  const api = useApi();
   const user = useUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: () =>
-      fetch(`http://localhost:8000/user/checkout/${book.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify(book.id),
-      }).then((response) => response.json()),
+      api
+        .post(`/user/checkout/${book.id}`, book.id)
+        .then((response) => response.json()),
     onSuccess: () => {
       console.log("Book checked out successfully!");
       queryClient.invalidateQueries(["books", user.id]);
@@ -80,18 +74,14 @@ function SearchResultCard({ book }) {
 
 function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { token } = useAuth();
+  const api = useApi();
 
   const { data, isLoading } = useQuery({
     queryKey: ["search", searchQuery],
     queryFn: () =>
-      fetch(`http://localhost:8000/books/google/${searchQuery}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+      api
+        .get(`/books/google/${searchQuery}`)
+        .then((response) => response.json()),
     enabled: !!searchQuery, // Only run query if searchQuery is not empty
   });
 

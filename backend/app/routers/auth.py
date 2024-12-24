@@ -8,11 +8,10 @@ from passlib.context import CryptContext
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlmodel import SQLModel, Session, select
-from backend import database as db
-from backend.schema import(
+import app.database as db
+from app.schema import(
     UserInDB,
     UserRegistrationRequest,
-    User
 )
 
 

@@ -1,7 +1,7 @@
-import "./Goals.css";
+import "../styles/Goals.css";
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";
+import { useUser } from "../hooks";
+import { useApi } from "../hooks";
 import {
   CircularProgressbar,
   CircularProgressbarWithChildren,
@@ -9,15 +9,6 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useState, useEffect } from "react";
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = date.getDate();
-
-  return `${date.toLocaleString("default", {
-    month: "short",
-  })} ${day}, ${date.getFullYear()}`;
-}
 
 function yearMonthDay() {
   const date = new Date();
@@ -31,7 +22,7 @@ function yearMonthDay() {
 
 function TodaysGoal() {
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
   const [enabledProgressQuery, setEnabledProgressQuery] = useState(false);
   let type = "";
   let periodName = "";
@@ -46,35 +37,19 @@ function TodaysGoal() {
     isSuccess: isSuccessGoal,
   } = useQuery({
     queryKey: ["todays_goal", user.id],
-    queryFn: () =>
-      fetch(`http://localhost:8000/goals/day`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+    queryFn: () => api.get("/goals/day").then((response) => response.json()),
   });
 
   if (dataGoal) {
     type = dataGoal.type;
     amount = dataGoal.amount;
   }
-
-  const {
-    data: progressData,
-    isLoading: isLoadingProgressQuery,
-    isSuccess: isSuccessProgressQuery,
-  } = useQuery({
+  const { data: progressData } = useQuery({
     queryKey: ["todays_progress", user.id, type, periodName],
     queryFn: () =>
-      fetch(`http://localhost:8000/goals/progress/${type}/day`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+      api
+        .get(`/goals/progress/${type}/day`)
+        .then((response) => response.json()),
     enabled: enabledProgressQuery,
   });
 
@@ -87,7 +62,6 @@ function TodaysGoal() {
 
   let percent = 0;
   if (progressData) {
-    console.log(progressData);
     percent = Math.floor((progressData / amount) * 100);
   }
 
@@ -139,7 +113,7 @@ function GoalCard({ goal }) {
   let period = "";
   let periodName = goal["period"];
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
 
   let y_m_d = yearMonthDay();
 
@@ -153,13 +127,9 @@ function GoalCard({ goal }) {
   const { data: progress } = useQuery({
     queryKey: ["progress", user.id, type, periodName],
     queryFn: () =>
-      fetch(`http://localhost:8000/goals/progress/${type}/${periodName}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+      api
+        .get(`/goals/progress/${type}/${periodName}`)
+        .then((response) => response.json()),
   });
 
   let percent = 0;
@@ -196,18 +166,11 @@ function GoalCard({ goal }) {
 
 function MyGoals() {
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
 
   const { data, isLoading } = useQuery({
     queryKey: ["goals", user.id],
-    queryFn: () =>
-      fetch(`http://localhost:8000/goals`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+    queryFn: () => api.get("/goals").then((response) => response.json()),
   });
 
   if (data) {

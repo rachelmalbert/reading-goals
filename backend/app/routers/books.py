@@ -1,9 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from backend import database as db
-from backend.routers.auth import get_current_user
-from backend.schema import (
+from app import database as db
+from app.routers.auth import get_current_user
+from app.schema import (
         BookInDB,
         Book,
         BookCollectionResponse,
@@ -13,7 +13,7 @@ from backend.schema import (
         )
 import httpx
 
-from backend import database as db
+from app import database as db
 
 
 books_router = APIRouter(prefix="/books", tags=["Books"])

@@ -2,10 +2,10 @@ from datetime import date
 from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from backend import database as db
+from app import database as db
 
-from backend.routers.auth import get_current_user
-from backend.schema import (
+from app.routers.auth import get_current_user
+from app.schema import (
     UserInDB,
     GoalInDB,
     TotalStatsResponse,

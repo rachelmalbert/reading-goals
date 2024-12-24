@@ -1,11 +1,10 @@
+import "./DashboardPage.css";
+
 import Sessions from "../components/Sessions";
 import Totals from "../components/Totals";
 import { Goals, TodaysGoal } from "../components/Goals";
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";
-import "./DashboardPage.css";
-import CurrentBook from "../components/CurrentBook";
+import { useUser } from "../hooks";
+import NowReadingCard from "../components/NowReadingCard";
 import Statistics from "../components/Statistics";
 
 function DashboardPage() {
@@ -29,7 +28,7 @@ function DashboardPage() {
             </div>
           </div>
           <div className="right">
-            <CurrentBook></CurrentBook>
+            <NowReadingCard></NowReadingCard>
 
             <Sessions></Sessions>
           </div>

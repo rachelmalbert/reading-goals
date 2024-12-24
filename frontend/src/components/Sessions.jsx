@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";
-import "./Sessions.css";
+// import { useUser } from "../context/UserContext";
+import { useUser, useApi } from "../hooks";
+// import { useAuth } from "../context/AuthContext";
+import "../styles/Sessions.css";
+import { use } from "react";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -11,33 +13,14 @@ function formatDate(dateString) {
   })} ${day}, ${date.getFullYear()}`;
 }
 
-function minsToHours(mins) {
-  let minutes = mins % 60;
-  let hours = Math.floor(mins / 60);
-  if (hours < 10) {
-    hours = `0${hours}`;
-  }
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-  return `${hours}h ${minutes}m`;
-}
-
 function SessionItem({ session }) {
-  const { token } = useAuth();
+  const { api } = useApi();
+
   const { data: bookData, isLoading } = useQuery({
     queryKey: ["book", session.book_id],
     queryFn: () =>
-      fetch(`http://localhost:8000/books/${session.book_id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+      api.get(`/books/${session.book_id}`).then((response) => response.json()),
   });
-
-  if (isLoading) return <p>Loading book info...</p>;
 
   return (
     <li className="session-item">
@@ -52,22 +35,15 @@ function SessionItem({ session }) {
 
 function Sessions() {
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
+
   const { data, isLoading } = useQuery({
     queryKey: ["sessions", user.id],
-    queryFn: () =>
-      fetch(`http://localhost:8000/sessions`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+    queryFn: () => api.get("/sessions").then((response) => response.json()),
   });
 
   return (
     <>
-      {isLoading && <p>Loading...</p>}
       {data && (
         <div className="reading-sessions-container">
           <h3 className="sessions-title">Reading Sessions</h3>

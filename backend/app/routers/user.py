@@ -1,16 +1,16 @@
 from datetime import datetime
 from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from backend import database as db
-from backend.schema import (
+from app import database as db
+from app.schema import (
     UserInDB,
     UserRegistrationRequest, # Request Model
     UserResponse,
     SessionRequest,
     BookInDB
 )
-from backend.routers.auth import get_current_user
+from app.routers.auth import get_current_user
 
 user_router = APIRouter(prefix="/user", tags=["User"])
 
@@ -66,6 +66,8 @@ async def checkout_book(session: db_dependency, user: user_dependency, book_id: 
 
 @user_router.get("/self", response_model=UserInDB)
 def get_self(user: user_dependency):
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     return user
 
 @user_router.get("/books")

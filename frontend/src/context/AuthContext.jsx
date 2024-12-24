@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Get, set, and delete token
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setToken(null);
-    navigate("");
+    navigate("/signin");
   };
 
   const isLoggedIn = !!token;
@@ -42,8 +42,8 @@ const AuthProvider = ({ children }) => {
 };
 
 // HOOK //
-const useAuth = () => {
-  return useContext(AuthContext);
-};
+// const useAuth = () => {
+//   return useContext(AuthContext);
+// };
 
-export { AuthProvider, useAuth };
+export { AuthProvider, AuthContext };

@@ -1,13 +1,13 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from backend.database import create_db_and_tables
-from backend.routers.books import books_router
-from backend.routers.user import user_router
-from backend.routers.auth import auth_router
-from backend.routers.goals import goals_router
-from backend.routers.dashboard import dashboard_router
-from backend.routers.sessions import sessions_router
-from backend.routers.stats import stats_router
+from app.database import create_db_and_tables
+from app.routers.books import books_router
+from app.routers.user import user_router
+from app.routers.auth import auth_router
+from app.routers.goals import goals_router
+from app.routers.dashboard import dashboard_router
+from app.routers.sessions import sessions_router
+from app.routers.stats import stats_router
 
 from fastapi.middleware.cors import CORSMiddleware
 

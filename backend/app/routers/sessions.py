@@ -1,9 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from backend.routers.auth import get_current_user
-from backend import database as db
-from backend.schema import (
+from app.routers.auth import get_current_user
+from app import database as db
+from app.schema import (
         GoalInDB,
         UserInDB,
         SessionRequest

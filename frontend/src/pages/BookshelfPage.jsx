@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";
+import { useUser, useApi } from "../hooks";
 import InProgressCard from "../components/InProgressCard";
 import UpNextCard from "../components/UpNextCard";
-import FinishedCard from "../components/FinishedCard";
+import FinishedBookCard from "../components/FinishedBookCard";
 import "./BookshelfPage.css";
 import { Link } from "react-router-dom";
 
@@ -17,7 +16,6 @@ function AddBookCard() {
         <Link to="/search">
           <button className="add-book-button">Add Book</button>
         </Link>
-        {/* <p>ADD BOOK</p> */}
       </div>
     </div>
   );
@@ -25,18 +23,11 @@ function AddBookCard() {
 
 function BookshelfPage() {
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
 
   const { data } = useQuery({
     queryKey: ["books", user.id],
-    queryFn: () =>
-      fetch("http://localhost:8000/user/books", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+    queryFn: () => api.get("/user/books").then((response) => response.json()),
   });
 
   if (data) {
@@ -75,10 +66,10 @@ function BookshelfPage() {
             {/* Finished */}
             <h3>Finished </h3>
             {finishedBooks.map((user_book) => (
-              <FinishedCard
+              <FinishedBookCard
                 key={user_book["book"].id}
                 user_book={user_book}
-              ></FinishedCard>
+              ></FinishedBookCard>
             ))}
           </div>
         </div>

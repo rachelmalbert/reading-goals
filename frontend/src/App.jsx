@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./hooks";
 import { UserProvider } from "./context/UserContext";
 import "./App.css";
 
@@ -13,9 +14,13 @@ import BookshelfPage from "./pages/BookshelfPage";
 import SearchPage from "./pages/SearchPage";
 
 // import top nav
-import TopNav from "./components/TopNav";
+import TopNav from "./components/Navbar";
 
 const queryClient = new QueryClient();
+
+function NotFound() {
+  return <h1>404: not found</h1>;
+}
 
 function Main() {
   const { isLoggedIn } = useAuth();
@@ -25,14 +30,16 @@ function Main() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/bookshelf" element={<BookshelfPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     );
   } else {
     return (
       <Routes>
-        <Route path="" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/signin" element={<SigninPage />} />
+        <Route path="*" element={<Navigate to="/signin" />} />
       </Routes>
     );
   }
@@ -45,10 +52,8 @@ function App() {
           <UserProvider>
             <div className="layout">
               <TopNav></TopNav>
-              {/* <div className="main"> */}
               <Main></Main>
             </div>
-            {/* </div> */}
           </UserProvider>
         </AuthProvider>
       </BrowserRouter>

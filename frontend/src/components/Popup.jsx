@@ -1,4 +1,4 @@
-import "./Popup.css";
+import "../styles/Popup.css";
 
 const Popup = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;

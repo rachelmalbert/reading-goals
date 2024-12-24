@@ -1,8 +1,6 @@
-import "./Totals.css";
-import "..";
+import "../styles/Totals.css";
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";
+import { useUser, useApi } from "../hooks";
 
 import books from "../assets/images/books.png";
 import pages from "../assets/images/pages.png";
@@ -10,20 +8,13 @@ import hourglass from "../assets/images/hourglass.png";
 
 function Totals() {
   const user = useUser();
-  const { token } = useAuth();
+  const api = useApi();
 
   const { data, isLoading } = useQuery({
     queryKey: ["totals", user.id],
-    queryFn: () =>
-      fetch(`http://localhost:8000/stats`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((response) => response.json()),
+    queryFn: () => api.get("/stats").then((response) => response.json()),
   });
-  //   console.log("data!", data);
+
   return (
     <>
       {isLoading && <p>Loading...</p>}

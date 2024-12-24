@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2"; // Import Bar component instead of Line
-import "./Statistics.css";
+import "../styles/Statistics.css";
 import {
   Chart as ChartJS,
   CategoryScale,

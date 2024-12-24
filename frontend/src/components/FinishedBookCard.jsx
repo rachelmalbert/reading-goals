@@ -1,11 +1,11 @@
-import "./FinishedCard.css";
+import "../styles/FinishedBookCard.css";
 
-function FinishedCard({ user_book }) {
+function FinishedBookCard({ user_book }) {
   const author = user_book.authors?.[0] || "Unknown Author";
   return (
     <>
       <div key={user_book.key} className="finished-book-card">
-        <img height="193" width="128" src={user_book["book"].cover_url}></img>
+        <img className="book-cover-img" src={user_book["book"].cover_url}></img>
         <div className="book-title">{user_book["book"].title}</div>
         <div className="book-author">{author.name}</div>
       </div>
@@ -13,4 +13,4 @@ function FinishedCard({ user_book }) {
   );
 }
 
-export default FinishedCard;
+export default FinishedBookCard;

@@ -5,7 +5,7 @@ import httpx
 from sqlmodel import Session, SQLModel, create_engine, select
 from sqlalchemy import desc, extract, func
 
-from backend.schema import (
+from app.schema import (
         BookInDB,
         Book,
         AuthorInDB,
@@ -23,7 +23,7 @@ from backend.schema import (
 
 # Create the engine and database 
 engine = create_engine(
-    "sqlite:///backend/database.db",
+    "sqlite:///app/database.db",
     echo=True,
     connect_args={"check_same_thread": False},
 )

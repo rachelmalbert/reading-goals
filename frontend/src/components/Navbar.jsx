@@ -1,7 +1,8 @@
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/images/rg-logo.png";
-import "./TopNav.css";
+import "../styles/Navbar.css";
 
 function LoggedInNav() {
   const { logout } = useAuth();
@@ -9,10 +10,10 @@ function LoggedInNav() {
     <div className="sidebar">
       {/* <h3>Reading Goals</h3> */}
 
-      <div class="reading-goals-logo">
+      <div className="reading-goals-logo">
         <img className="nav-logo" src={logo} alt="Logo" />
-        <span class="reading">Reading</span>
-        <span class="goals">Goals</span>
+        <span className="reading">Reading</span>
+        <span className="goals">Goals</span>
       </div>
 
       <div className="nav-list">
@@ -34,7 +35,7 @@ function LoggedOutNav() {
   return <>{/* <img src="..assets/images/logo.jpg"></img> */}</>;
 }
 
-function TopNav() {
+function Navbar() {
   const { isLoggedIn } = useAuth();
   if (isLoggedIn) {
     return <LoggedInNav></LoggedInNav>;
@@ -43,4 +44,4 @@ function TopNav() {
     return <LoggedOutNav></LoggedOutNav>;
   }
 }
-export default TopNav;
+export default Navbar;

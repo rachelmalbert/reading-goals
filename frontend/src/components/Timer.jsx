@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from "react";
-import "./Timer.css";
+import Popup from "../components/Popup";
+import "../styles/Timer.css";
 
 function Stopwatch({ time, setTime }) {
-  // State to store elapsed time in seconds
-  //   const [time, setTime] = useState(60);
-  // State to track if the stopwatc is running or paused
   const [isRunning, setIsRunning] = useState(false);
 
-  // Start/Stop the stopwatch when the button is clicked
   const toggleStopwatch = () => {
     setIsRunning((prev) => !prev);
   };
 
-  // Reset the stopwatch to 0
   const resetStopwatch = () => {
-    setIsRunning(false); // Stop the stopwatch
-    setTime(0); // Reset time to 0
+    setIsRunning(false);
+    setTime(0);
   };
 
-  // Effect to update the stopwatch time every second
   useEffect(() => {
     let interval;
 
-    // If the stopwatch is running, update the time every second
     if (isRunning) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
-      }, 1000); // Update every second
+      }, 1000);
     } else {
-      clearInterval(interval); // Clear the interval when paused
+      clearInterval(interval);
     }
 
-    // Cleanup the interval when the component is unmounted or isRunning changes
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  // Format time as minutes:seconds
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
     let remaining_seconds = time - hours * 3600;
@@ -47,35 +39,46 @@ function Stopwatch({ time, setTime }) {
   };
 
   return (
-    // <div style={{ textAlign: "center" }}>
-    //   <div>
-    //     <p style={{ fontSize: "2rem" }}>{formatTime(time)}</p>
-    //     <button onClick={toggleStopwatch} style={{ margin: "10px" }}>
-    //       {isRunning ? "Pause" : "Start"}
-    //     </button>
-    //     <button onClick={resetStopwatch} style={{ margin: "10px" }}>
-    //       Reset
-    //     </button>
-    //     {/* <button onClick={handleSubmitStopwatch} style={{ margin: "10px" }}>
-    //       Submit
-    //     </button> */}
-    //   </div>
-    // </div>
-
-    <div class="timer-container">
-      <div class="clock" id="clock">
-        00:00
-      </div>
-      <div class="buttons">
-        <button class="start-btn" id="startBtn">
-          Start
+    <div>
+      <div>
+        <p>{formatTime(time)}</p>
+        <button onClick={toggleStopwatch}>
+          {isRunning ? "Pause" : "Start"}
         </button>
-        <button class="stop-reset-btn" id="stopResetBtn">
-          Stop / Reset
-        </button>
+        <button onClick={resetStopwatch}>Reset</button>
+        {/* <button onClick={handleSubmitStopwatch} style={{ margin: "10px" }}>
+          Submit
+        </button> */}
       </div>
     </div>
   );
 }
+
+// function TimerPopup({}) {
+//   return (
+//     <Popup isOpen={showTimerPopup} onClose={() => setShowTimerPopup(false)}>
+//       <div className="timer-popup">
+//         <h3>Now Reading</h3>
+//         <div className="timer-book-info">
+//           <img height="193" width="128" src={user_book["book"].cover_url}></img>
+//         </div>
+//         <Stopwatch time={time} setTime={setTime}></Stopwatch>
+//         <button onClick={handleSubmitStopwatch}>Done Reading</button>
+//         <Popup
+//           isOpen={showEnterPagePopup}
+//           onClose={() => setShowEnterPagePopup(false)}
+//         >
+//           <form onSubmit={addDailyStat}>
+//             <FormInput
+//               name="What page did you get to?"
+//               setter={setPages}
+//             ></FormInput>
+//             <button type="submit">Add Session</button>
+//           </form>
+//         </Popup>
+//       </div>
+//     </Popup>
+//   );
+// }
 
 export default Stopwatch;
