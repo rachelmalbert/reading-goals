@@ -1,5 +1,6 @@
+import calendar
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from fastapi import HTTPException
 import httpx
 from sqlmodel import Session, SQLModel, create_engine, select
@@ -40,12 +41,12 @@ def get_session():
 #   USERS   #
 # --------- #
 
-def get_user_by_id(session: Session, user_id: int):
-        """Get user by id"""
-        user = session.get(UserInDB, user_id)
-        if user is None:
-                raise HTTPException(status_code=404, detail="User not found")
-        return user
+# def get_user_by_id(session: Session, user_id: int):
+#         """Get user by id"""
+#         user = session.get(UserInDB, user_id)
+#         if user is None:
+#                 raise HTTPException(status_code=404, detail="User not found")
+#         return user
 
 def get_finished_books(session: Session):
     """Get finished books"""
@@ -62,29 +63,6 @@ def get_finished_books_by_year(session: Session, year: int):
             print("yay!")
     return finished
 
-def get_goal_progress(session: Session, user_id: int, type: str, period: str):
-    """Get the users progress of a goal"""
-    cur_year = datetime.now().year
-    cur_month = datetime.now().month
-    if type == "books":
-        finished = get_finished_books(session)
-        if period == "year":
-              return len([book for book in finished if book.finish_date.year == cur_year])
-        if period == "month":
-              return len([book for book in finished if book.finish_date.month == cur_month and book.finish_date.year == cur_year])         
-    if period == "month":
-        monthly_stats = get_monthly_stats(session, user_id)[type]
-        print("MON%", monthly_stats)
-        return monthly_stats
-
-    if period == "day":
-        daily_stats =  get_todays_stats(session, user_id)
-        if daily_stats:
-            if type == "minutes":
-                return  daily_stats.minutes
-            if type == "pages":
-                return daily_stats.type
-        else: return 0
     
 def get_book_progress(session: Session, user_id: int, book_id: str):
     """Gets the progress of book with book_id"""
@@ -128,6 +106,18 @@ def add_author(session: Session, authors_name: str):
         session.refresh(new_author)
         return new_author
 
+def get_current_book(session: Session, user_id: int):
+      """Gets the book the user is currently reading"""
+      sessions = get_sessions(session, user_id)
+      if not sessions:
+          return None
+      most_recent = sessions[0]
+      for read_session in sessions:
+            if read_session.created_at > most_recent.created_at:
+                most_recent = read_session
+      return most_recent
+
+
 def get_user_book_links(session: Session, user_id: int):
         """Get all user book links belonging to user"""
         query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id)
@@ -146,6 +136,17 @@ def get_user_book_link(session: Session, user_id: int, book_id: str):
             return user_book_link
         else:
                raise HTTPException(status_code=404, detail="User Book Link not found")
+
+def get_current_user_book_link(session: Session, user_id: int):
+        """Gets the user book link of current book"""
+        current_book = get_current_book(session, user_id)
+        current_user_book_link = get_user_book_link(session, user_id, current_book.book_id)
+        if current_user_book_link:
+            return {"user_book_link": current_user_book_link, "book": current_user_book_link.book}
+        else:
+               raise HTTPException(status_code=404, detail="User Book Link not found")
+
+      
 
 def get_author(session: Session, authors_name: str):
         """Get author by name"""
@@ -175,12 +176,6 @@ async def get_google_book_by_id(google_id: str) -> Book:
                         cover_url=image_links.get("thumbnail", None),
                         authors=book["volumeInfo"].get("authors", None))
         return add
-
-# def get_cover_url(session: Session, book_id: str):
-#        """Get cover_url of book with book_id"""
-#        query = select(BookInDB).where(BookInDB.id==book_id)
-#        url = session.exec(query).first().cover_url
-#        return url
   
 def start_book(session: Session, user_id: int, book_id: str):
         """Start reading book"""
@@ -207,15 +202,6 @@ def update_status(session: Session, user_id: int, book_id: str, status: str):
        session.commit()
        session.refresh(user_book_link)
        return user_book_link.status
-# def update_book_stat(session:Session, user_id: int, book_id: str, cur_page: int, minutes: int):
-#         """Update book progress"""
-#         user_book_link = get_user_book_link(session, user_id, book_id)
-#         user_book_link.previous_page = user_book_link.current_page
-#         user_book_link.current_page = cur_page
-#         user_book_link.minutes_spent += minutes
-#         session.commit()
-#         session.refresh(user_book_link)
-#         return user_book_link
         
 def update_book_pages(session: Session, user_id: int, book_id: str, cur_page: int, prev_page: int):
        """Update current page of book belonging to user"""
@@ -247,18 +233,6 @@ def delete_book(session: Session, user_id: int, book_id: str):
 #   GOALS   #
 # --------- #
 
-# def add_goal(session : Session, user: UserInDB, period: str, type: str, amount: int, books_per_year: int):
-#     new_goal = GoalInDB(user_id=user.id,
-#                         type=type,
-#                         period=period,
-#                         amount=amount,
-#                         books_per_year=books_per_year,
-#                         user=user)
-#     session.add(new_goal)
-#     session.commit()
-#     session.refresh(new_goal)
-#     return new_goal
-
 def add_goal(session : Session, user: UserInDB, goal: GoalRequest):
     new_goal = GoalInDB(**goal.model_dump(),
                         user=user)
@@ -267,25 +241,50 @@ def add_goal(session : Session, user: UserInDB, goal: GoalRequest):
     session.refresh(new_goal)
     return new_goal
 
+def get_goal(session : Session, goal_id: int):
+    """Get the user's goal for the given time period"""
+    goal = session.get(GoalInDB, goal_id)
+    return goal
+
+def get_goal_progress(session: Session, user_id: int, goal_id: int):
+    """Get the users progress of a goal"""
+    goal = get_goal(session, goal_id)
+
+    cur_year = datetime.now().year
+    cur_month = datetime.now().month
+    if type == "books":
+        finished = get_finished_books(session)
+        if goal.period == "yearly":
+              return len([book for book in finished if book.finish_date.year == cur_year])
+        if goal.period == "monthly":
+              return len([book for book in finished if book.finish_date.month == cur_month and book.finish_date.year == cur_year])         
+    if goal.period == "monthly":
+        monthly_stats = get_monthly_stats(session, user_id)[type]
+        print("MON%", monthly_stats)
+        return monthly_stats
+
+    if goal.period == "daily":
+        daily_stats =  get_todays_stats(session, user_id)
+        if daily_stats:
+            if type == "minutes":
+                return  daily_stats.minutes
+            if type == "pages":
+                return daily_stats.type
+        else: return 0
     
-def update_goal(session : Session, user: UserInDB, period: str, type: str, amount: int, books_per_year: int):
+def update_goal(session : Session, user: UserInDB, goal_id: int, goalUpdate: GoalRequest):
     
-    goal = user.goal
-    setattr(goal, "period", period)
-    setattr(goal, "type", type)
-    setattr(goal, "amount", amount)
-    setattr(goal, "books_per_year", books_per_year)
+    goal = get_goal(session, goal_id)
+    setattr(goal, "period", goalUpdate.period)
+    setattr(goal, "type", goalUpdate.type)
+    setattr(goal, "amount", goalUpdate.amount)
 
     session.add(goal)
     session.commit()
     session.refresh(goal)
     return goal
  
-def get_goal(session : Session, user_id: int, period: str):
-    """Get the user's goal for the given time period"""
-    query = select(GoalInDB).where(GoalInDB.user_id == user_id, GoalInDB.period==period)
-    goal = session.exec(query).first()
-    return goal
+
     
 # --------- #
 #  SESSIONS #
@@ -293,11 +292,14 @@ def get_goal(session : Session, user_id: int, period: str):
 
 def add_session(session: Session, user_id: int, new_session: SessionRequest):
        """Add a new user reading session"""
+       
        book_id = new_session.book_id
        prev_page = get_user_book_link(session, user_id, book_id).current_page
        cur_page = new_session.cur_page
        minutes = new_session.minutes
-       date_created = new_session.created_at.date()
+       date_created = new_session.created_at
+       print("session created at%", date_created)
+
        pages_read = cur_page - prev_page
        
        # Add the new reading session
@@ -328,7 +330,7 @@ def get_sessions_by_date(session: Session, user_id: int):
        # {date: [sessions]}
        sessions_by_date = defaultdict(list)
        for session in sessions:
-        session_date = session.created_at.date()
+        session_date = session.created_at
         sessions_by_date[session_date].append(session)
        return dict(sessions_by_date)
 
@@ -339,7 +341,9 @@ def get_sessions_by_date(session: Session, user_id: int):
 def update_daily_stat(session: Session, user_id: int, y_m_d: date, pages_read: int, minutes: int):
         """Create or update daily reading stat"""
         query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id, DailyStatInDB.y_m_d==y_m_d)
+   
         daily_stat = session.exec(query).first()
+        print("STAT!!", daily_stat)
         # if the daily stat already exists, update it
         if daily_stat:
                daily_stat.pages += pages_read
@@ -364,40 +368,108 @@ def get_total_stats(session: Session, user_id: int):
 
        books = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id, UserBookLinkInDB.status=="finished")
 
-       total_pages = session.exec(pages).first()
+       total_pages = session.exec(pages).first() 
        total_minutes = session.exec(minutes).first()
        total_books = len(session.exec(books).all())
-       res = TotalStatsResponse(total_pages=total_pages, total_minutes=total_minutes, total_books=total_books)
+       res = TotalStatsResponse(total_pages=total_pages if total_pages else 0, total_minutes=total_minutes if total_minutes else 0, total_books=total_books if total_books else 0)
        return res
 
 def get_todays_stats(session: Session, user_id: int):
     """Get todays stats for user"""   
     current_date = datetime.today().strftime('%Y-%m-%d')
-    print("@@", current_date)
     query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id, DailyStatInDB.y_m_d == current_date)
     todays_stats = session.exec(query).first()
     return todays_stats
 
-def get_monthly_stats(session: Session, user_id: int):
+def get_daily_stats(session: Session, user_id: int, date: date):
+      """Get daily stat"""
+      current_date = date.strftime('%Y-%m-%d')
+      print("DATEE", date)
+
+      query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id, DailyStatInDB.y_m_d==date)
+      stat = session.exec(query).first()
+    #   print("STAT%!", stat)
+      if stat:
+        return {"minutes": stat.minutes, "pages": stat.pages}
+      return {"minutes": 0, "pages": 0}
+
+def get_monthly_stats(session: Session, user_id: int, month: int, year: int):
     """Get monthly stats for user"""   
-    cur_month = datetime.today().month
-    cur_year = datetime.today().year
-    print("@@", cur_month)
+    cur_month = month
+    cur_year = year
     minutes_query = select(func.sum(DailyStatInDB.minutes)).where(DailyStatInDB.user_id==user_id, extract('month', DailyStatInDB.y_m_d) == cur_month, extract('year', DailyStatInDB.y_m_d) == cur_year)
     minutes = session.exec(minutes_query).first()
     pages_query = select(func.sum(DailyStatInDB.pages)).where(DailyStatInDB.user_id==user_id, extract('month', DailyStatInDB.y_m_d) == cur_month, extract('year', DailyStatInDB.y_m_d) == cur_year)
     pages = session.exec(pages_query).first()
+    # {minutes: 122, pages: 500}
     return {"minutes": minutes, "pages": pages}
 
-# def get_user_stats(session: Session, user_id: int):
-#     """Get all daily stats belonging to the user"""
-#     query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id)
-#     stats = session.exec(query).all()
-#     return stats
+def get_chart_data(session: Session, user_id: int, period: str):
+        current_date = datetime.today()
+        cur_year = current_date.year
+        cur_month = current_date.month
+        cur_day = current_date.day
+        cur_weekday = current_date.weekday()
+
+        print("CURYEAR", cur_day)
+        
+
+        monthly_numbers = rotate_right(list(range(1, 31)), 29 - cur_day)
+
+        pages, minutes, labels = [], [], []
+        label_numbers = []
+        # cur_number = 0
+        stat = {}
+        match period:
+              case "weekly":
+                    label_numbers = rotate_right(list(range(0, 7)), 6 - cur_weekday)
+                    current_date = date(cur_year, cur_month, cur_day)
+                
+                    subtract = 6
+                    start_date = current_date - timedelta(days=subtract)
+                
+                    for number in label_numbers:
+                        labels.append(calendar.day_abbr[number])
+
+                        stat = get_daily_stats(session, user_id, start_date)
+                        print("DATE%", start_date)
+
+                        print("STAT%", stat)
+                        pages.append(stat["pages"])
+                        minutes.append(stat["minutes"])
+                        subtract = subtract - 1
+                        start_date = current_date - timedelta(days=subtract)
+
+                        
+              case "monthly":        
+                    _, days_in_month = calendar.monthrange(cur_year, cur_month)
+                    label_numbers = rotate_right(list(range(1, days_in_month)), days_in_month - 1 - cur_day)
+                  
+                    for day in label_numbers:
+                          current_date =  date(cur_year, cur_month, day)
+                          stat = get_daily_stats(session, user_id, current_date)
+                          pages.append(stat["pages"])
+                          minutes.append(stat["minutes"])
+                          labels.append(day)
+              case "yearly":
+                    cur_number =  datetime.today().month
+                    label_numbers = rotate_right(list(range(1, 13)), 12 - cur_number)
+                    for month in label_numbers:
+                          stat = get_monthly_stats(session, user_id, month, cur_year)
+                          pages.append(stat["pages"])
+                          minutes.append(stat["minutes"])
+                          labels.append(calendar.month_abbr[month])
+
+        return {"labels": labels, "pages": pages, "minutes": minutes}
+                
 # --------- #
 #   Delete  #
 # --------- #     
 
+
+def rotate_right(arr, n):
+    # Rotate by n positions to the right
+    return arr[-n % len(arr):] + arr[:-n % len(arr)]
 
         
 

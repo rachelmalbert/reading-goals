@@ -80,6 +80,8 @@ def get_user_books(session: db_dependency, user: user_dependency):
 @user_router.get("/current-book")
 def get_current_book(session: db_dependency, user: user_dependency):
     sessions = db.get_sessions(session, user.id)
+    if not sessions:
+          return None
     most_recent = sessions[0]
     for read_session in sessions:
         if read_session.created_at > most_recent.created_at:
@@ -87,6 +89,16 @@ def get_current_book(session: db_dependency, user: user_dependency):
     current_book = db.get_book_by_id(session, most_recent.book_id)
     book_progress = db.get_book_progress(session, user.id, most_recent.book_id)
     return {"book": current_book, "progress": book_progress}
+
+@user_router.get("/current-user-book-link")
+def get_current_user_book_link(session: db_dependency, user: user_dependency):
+        """Get the user_book_link for the current book the user is reading"""
+        # current_book = db.get_current_book(session, user.id)
+        # user_book_link = db.get_user_book_link(session, user.id, current_book.book_id)
+        current_user_book_link = db.get_current_user_book_link(session, user.id)
+        return current_user_book_link
+
+
 
 @user_router.get("/books/{year}")
 def get_finished_books_by_year(session: db_dependency, year: int):

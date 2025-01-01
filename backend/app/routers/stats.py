@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
@@ -34,8 +35,23 @@ def get_todays_stats(session: db_dependency, user: user_dependency):
     stats = db.get_todays_stats(session, user.id)
     return stats
 
-@stats_router.get("/month")
-def get_monthly_stats(session: db_dependency, user: user_dependency):
-    """Get monthly stats for user"""
-    stats = db.get_monthly_stats(session, user.id)
-    return stats
+# @stats_router.get("/month")
+# def get_monthly_stats(session: db_dependency, user: user_dependency):
+#     """Get monthly stats for user"""
+#     stats = db.get_monthly_stats(session, user.id)
+#     return stats
+
+
+# @stats_router.get("/yearly")
+# def get_yearly_stats(session: db_dependency, user: user_dependency,  year: int = datetime.now().year):
+#     """Get stats for user"""
+#     stats = db.get_yearly_stats(session, user.id, year)
+#     # {pages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], minutes: []}
+#     return stats
+
+@stats_router.get("/{period}")
+def get_stats(session: db_dependency, user: user_dependency, period: str):
+    """Get  stats for user"""
+    # date = datetime.now()
+    chartData = db.get_chart_data(session, user.id, period)
+    return chartData

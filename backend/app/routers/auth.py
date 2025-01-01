@@ -12,6 +12,7 @@ import app.database as db
 from app.schema import(
     UserInDB,
     UserRegistrationRequest,
+    GoalInDB
 )
 
 
@@ -51,6 +52,17 @@ def create_user(*, session: db_dependency, registration: UserRegistrationRequest
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
+
+    daily_goal = GoalInDB(user_id=new_user.id, type="minutes", period="day", amount="25")
+    yearly_goal = GoalInDB(user_id=new_user.id, type="books", period="year", amount="12")
+    session.add(daily_goal)
+    session.add(yearly_goal)
+
+    session.commit()
+    session.refresh(daily_goal)
+    session.refresh(yearly_goal)
+
+    
     return new_user
 
 @auth_router.post("/token", response_model=AccessTokenResponse)
@@ -105,16 +117,7 @@ def get_current_user(session: db_dependency, token: Annotated[str, Depends(oauth
     # except ExpiredSignatureError:
     #     raise HTTPException(status_code=401, detail="expired signature")
     
-    
-        
-
-    
-
-
-
-    
-
-    
+   
 
 
 # Dependency example #
