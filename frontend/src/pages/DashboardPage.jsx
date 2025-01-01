@@ -2,13 +2,15 @@ import "./DashboardPage.css";
 
 import Sessions from "../components/Sessions";
 import Totals from "../components/Totals";
-import { Goals, TodaysGoal } from "../components/Goals";
+import { DailyGoal, Goals, TodaysGoal, YearlyGoal } from "../components/Goals";
 import { useUser } from "../hooks";
 import NowReadingCard from "../components/NowReadingCard";
+import UpdateBook from "../components/UpdateBook";
 import Statistics from "../components/Statistics";
 
 function DashboardPage() {
   const user = useUser();
+
   return (
     <>
       <div className="dashboard">
@@ -21,7 +23,6 @@ function DashboardPage() {
             <Totals></Totals>
             <div className="middle">
               <Goals></Goals>
-              <TodaysGoal></TodaysGoal>
             </div>
             <div className="bottom">
               <Statistics></Statistics>

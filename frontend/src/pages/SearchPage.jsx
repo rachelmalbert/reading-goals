@@ -12,10 +12,7 @@ function AddBook({ book }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: () =>
-      api
-        .post(`/user/checkout/${book.id}`, book.id)
-        .then((response) => response.json()),
+    mutationFn: () => api.post(`/user/checkout/${book.id}`, book.id).then((response) => response.json()),
     onSuccess: () => {
       console.log("Book checked out successfully!");
       queryClient.invalidateQueries(["books", user.id]);
@@ -37,10 +34,7 @@ function AddBook({ book }) {
 
 function SearchResultCard({ book }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const firstAuthor =
-    book.authors && book.authors.length > 0
-      ? book.authors[0]
-      : "Unknown Author";
+  const firstAuthor = book.authors && book.authors.length > 0 ? book.authors[0] : "Unknown Author";
   const pages = book.page_count ? book.page_count + " pages" : "";
 
   const toggleDescription = () => {
@@ -49,7 +43,7 @@ function SearchResultCard({ book }) {
 
   return (
     <div className="search-book-card">
-      <img className="book-cover" src={book.cover_url} alt={book.title} />
+      <img className="book-cover-img" src={book.cover_url} alt={book.title} />
       <div className="book-info">
         <h2 className="book-title">{book.title}</h2>
         <h3 className="book-author">
@@ -78,10 +72,7 @@ function SearchPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["search", searchQuery],
-    queryFn: () =>
-      api
-        .get(`/books/google/${searchQuery}`)
-        .then((response) => response.json()),
+    queryFn: () => api.get(`/books/google/${searchQuery}`).then((response) => response.json()),
     enabled: !!searchQuery, // Only run query if searchQuery is not empty
   });
 

@@ -7,11 +7,11 @@ import pages from "../assets/images/pages.png";
 import hourglass from "../assets/images/hourglass.png";
 
 function Totals() {
-  const user = useUser();
+  // const user = useUser();
   const api = useApi();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["totals", user.id],
+    queryKey: ["totals"],
     queryFn: () => api.get("/stats").then((response) => response.json()),
   });
 

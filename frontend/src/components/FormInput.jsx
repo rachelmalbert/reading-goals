@@ -12,7 +12,7 @@ const FormInput = ({ setter, ...props }) => {
   };
 
   return (
-    <div>
+    <div className={props.className}>
       <label htmlFor={props.name}>{props.name}</label>
       <input {...props} id={props.name} onChange={handleChange} />
     </div>

@@ -4,7 +4,6 @@
   overflow: hidden;
   width: 100%;
   background-color: #f2f5fd;
-
   padding: 1.5rem;
   gap: 1rem;
 }
@@ -13,6 +12,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: row;
+  height: 100%;
   justify-content: space-around;
   gap: 1rem;
 }

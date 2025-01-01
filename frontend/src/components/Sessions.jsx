@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-// import { useUser } from "../context/UserContext";
 import { useUser, useApi } from "../hooks";
-// import { useAuth } from "../context/AuthContext";
 import "../styles/Sessions.css";
-import { use } from "react";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -16,7 +13,7 @@ function formatDate(dateString) {
 function SessionItem({ session }) {
   const { api } = useApi();
 
-  const { data: bookData, isLoading } = useQuery({
+  const { data: bookData } = useQuery({
     queryKey: ["book", session.book_id],
     queryFn: () =>
       api.get(`/books/${session.book_id}`).then((response) => response.json()),

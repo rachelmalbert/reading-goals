@@ -1,14 +1,20 @@
 import { useState } from "react";
 import Popup from "../components/Popup";
 import "../styles/InProgressCard.css";
-import AddSessionForm from "./AddSessionForm";
+import UpdateBook from "./UpdateBook";
 
 function InProgressCard({ user_book }) {
   const page_count = user_book["book"].page_count;
   const prev_page = user_book.current_page;
 
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
-  const [showTimerPopup, setShowTimerPopup] = useState(false);
+  const [updateType, setUpdateType] = useState("");
+
+  const onClick = (e) => {
+    e.preventDefault();
+    setUpdateType(e.target.value);
+    setShowUpdatePopup(true);
+  };
 
   return (
     <>
@@ -19,16 +25,10 @@ function InProgressCard({ user_book }) {
             <progress value={prev_page} max={page_count}></progress>
           </div>
           <div className="progress-buttons">
-            <button
-              className="read-button"
-              onClick={() => setShowTimerPopup(true)}
-            >
+            <button className="read-button" value="read" onClick={onClick}>
               Read
             </button>
-            <button
-              className="update-button"
-              onClick={() => setShowUpdatePopup(true)}
-            >
+            <button className="update-button" value="update" onClick={onClick}>
               Update
             </button>
           </div>
@@ -37,19 +37,11 @@ function InProgressCard({ user_book }) {
           isOpen={showUpdatePopup}
           onClose={() => setShowUpdatePopup(false)}
         >
-          <AddSessionForm
+          <UpdateBook
             user_book={user_book}
             setShowUpdatePopup={setShowUpdatePopup}
-            type="update"
+            type={updateType}
           />
-        </Popup>
-
-        <Popup isOpen={showTimerPopup} onClose={() => setShowTimerPopup(false)}>
-          <AddSessionForm
-            user_book={user_book}
-            setShowUpdatePopup={setShowUpdatePopup}
-            type="read"
-          ></AddSessionForm>
         </Popup>
       </div>
     </>

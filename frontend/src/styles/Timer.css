@@ -1,15 +1,91 @@
-/* Timer container styling */
-.timer-container {
-  width: 300px;
-  height: 200px;
-  background-color: #f4f4f4; /* Soft light gray background */
-  border-radius: 15px;
+/* Overall container for the stopwatch */
+.stopwatch-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
-  padding: 20px;
-  font-family: "Poppins", sans-serif; /* Modern font */
-  margin: 50px auto;
+  justify-content: center;
+  /* max-width: 300px; */
+  /* margin: 50px auto; */
+  padding: 1.5rem;
+  background: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Roboto", sans-serif;
+}
+
+/* Time display section */
+.time-display p {
+  font-size: 48px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Button group container */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+
+/* Base button styling */
+.btn {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  text-transform: capitalize;
+}
+
+/* Specific button styles */
+.btn.start {
+  background-color: #28a745; /* Green for Start */
+  color: white;
+}
+
+.btn.start:hover {
+  background-color: #218838; /* Darker green */
+}
+
+.btn.pause {
+  background-color: #ffc107; /* Yellow for Pause */
+  color: white;
+}
+
+.btn.pause:hover {
+  background-color: #e0a800; /* Darker yellow */
+}
+
+.btn.reset {
+  background-color: #dc3545; /* Red for Reset */
+  color: white;
+}
+
+.btn.reset:hover {
+  background-color: #c82333; /* Darker red */
+}
+
+/* Disabled button effect */
+.btn:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .time-display p {
+    font-size: 36px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 10px 20px;
+    width: 100px;
+  }
 }

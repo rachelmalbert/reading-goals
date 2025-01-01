@@ -6,14 +6,14 @@ import FinishedBookCard from "../components/FinishedBookCard";
 import "./BookshelfPage.css";
 import { Link } from "react-router-dom";
 
-function AddBookCard() {
+function AddBookCard({ url }) {
   return (
     <div className="add-book-card">
       <div className="plus-icon">
         <i className="fas fa-plus"></i> {/* Font Awesome "+" Icon */}
       </div>
       <div className="info">
-        <Link to="/search">
+        <Link to={url}>
           <button className="add-book-button">Add Book</button>
         </Link>
       </div>
@@ -31,9 +31,7 @@ function BookshelfPage() {
   });
 
   if (data) {
-    const inProgressBooks = data.filter(
-      (book) => book.status === "in progress"
-    );
+    const inProgressBooks = data.filter((book) => book.status === "in progress");
     const upNextBooks = data.filter((book) => book.status === "up next");
     const finishedBooks = data.filter((book) => book.status === "finished");
     return (
@@ -44,21 +42,15 @@ function BookshelfPage() {
             <h3>In Progress</h3>
             <div className="bookshelf-in-progress">
               {inProgressBooks.map((user_book) => (
-                <InProgressCard
-                  key={user_book["book"].id}
-                  user_book={user_book}
-                ></InProgressCard>
+                <InProgressCard key={user_book["book"].id} user_book={user_book}></InProgressCard>
               ))}
             </div>
             {/* Up Next */}
             <h3>Up Next</h3>
             <div className="bookshelf-up-next">
-              <AddBookCard></AddBookCard>
+              <AddBookCard url="/search"></AddBookCard>
               {upNextBooks.map((user_book) => (
-                <UpNextCard
-                  key={user_book["book"].id}
-                  user_book={user_book}
-                ></UpNextCard>
+                <UpNextCard key={user_book["book"].id} user_book={user_book}></UpNextCard>
               ))}
             </div>
           </div>
@@ -66,17 +58,14 @@ function BookshelfPage() {
             {/* Finished */}
             <h3>Finished </h3>
             {finishedBooks.map((user_book) => (
-              <FinishedBookCard
-                key={user_book["book"].id}
-                user_book={user_book}
-              ></FinishedBookCard>
+              <FinishedBookCard key={user_book["book"].id} user_book={user_book}></FinishedBookCard>
             ))}
           </div>
         </div>
       </div>
     );
   } else {
-    return <AddBookCard></AddBookCard>;
+    return <AddBookCard url="/search"></AddBookCard>;
   }
 }
 export default BookshelfPage;

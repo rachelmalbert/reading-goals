@@ -1,5 +1,6 @@
 .popup {
   position: fixed;
+  /* position: static; */
   top: 0;
   left: 0;
   right: 0;
@@ -7,9 +8,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Make sure it's above other elements */
+  z-index: 100000; /* Make sure it's above other elements */
 }
-.overlay {
+.popup-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,7 +20,7 @@
 }
 
 .content {
-  position: relative;
+  position: absolute;
   background: white;
   padding: 20px;
   border-radius: 8px;

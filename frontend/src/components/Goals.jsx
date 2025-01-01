@@ -1,189 +1,125 @@
 import "../styles/Goals.css";
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "../hooks";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "../hooks";
-import {
-  CircularProgressbar,
-  CircularProgressbarWithChildren,
-  buildStyles,
-} from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import FormInput from "./FormInput";
+import ProgressCircle from "./ProgressCircle";
+import { yearMonthDay } from "../utils";
+import Popup from "./Popup";
 
-function yearMonthDay() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
-    date
-  );
-  const day = date.getDate();
-  return { month: month, day: day, year: year };
-}
-
-function TodaysGoal() {
-  const user = useUser();
+function EditGoalForm({ goal, setShowEditGoal }) {
   const api = useApi();
-  const [enabledProgressQuery, setEnabledProgressQuery] = useState(false);
-  let type = "";
-  let periodName = "";
-  let amount = "";
+  const queryClient = useQueryClient();
+  const [period, setPeriod] = useState(goal.period);
+  const [amount, setAmount] = useState(goal.amount);
+  const [type, setType] = useState(goal.type);
 
-  let y_m_d = yearMonthDay();
-  const today = `${y_m_d.month} ${y_m_d.day}`;
+  const goalUpdate = {
+    type,
+    period,
+    amount,
+  };
 
-  const {
-    data: dataGoal,
-    isLoading: isLoadingGoal,
-    isSuccess: isSuccessGoal,
-  } = useQuery({
-    queryKey: ["todays_goal", user.id],
-    queryFn: () => api.get("/goals/day").then((response) => response.json()),
+  const mutation = useMutation({
+    mutationFn: (goalUpdate) => api.put(`/goals/update/${goal.id}`, goalUpdate).then((response) => response.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries([goal.id]);
+    },
   });
 
-  if (dataGoal) {
-    type = dataGoal.type;
-    amount = dataGoal.amount;
-  }
-  const { data: progressData } = useQuery({
-    queryKey: ["todays_progress", user.id, type, periodName],
-    queryFn: () =>
-      api
-        .get(`/goals/progress/${type}/day`)
-        .then((response) => response.json()),
-    enabled: enabledProgressQuery,
-  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutation.mutate(goalUpdate);
+    setShowEditGoal(false);
+  };
 
-  // When the first query (todays_goal) is successful, enable the second query
-  useEffect(() => {
-    if (isSuccessGoal) {
-      setEnabledProgressQuery(true); // Enable second query
-    }
-  }, [isSuccessGoal]);
-
-  let percent = 0;
-  if (progressData) {
-    percent = Math.floor((progressData / amount) * 100);
-  }
-
-  if (isLoadingGoal) {
-    return <div>Loading...</div>;
-  } else {
-    return (
-      <div className="daily-goal-container">
-        <div className="daily-goal-header">Today's Goal</div>
-        <div className="daily-goal-progress">
-          <div>{today}</div>
-          <div>
-            {progressData} of {amount}
-          </div>
-          <div className="capitalize">{type} Read</div>
-          <div className="progress-circle">
-            {percent < 100 && (
-              <CircularProgressbarWithChildren
-                styles={buildStyles({
-                  pathColor: "#8c6a4d",
-                  trailColor: "#eee",
-                })}
-                value={percent}
-              >
-                {percent}%
-              </CircularProgressbarWithChildren>
-            )}
-            {percent >= 100 && (
-              <CircularProgressbarWithChildren
-                styles={buildStyles({
-                  pathColor: "#8c6a4d",
-                  trailColor: "#eee",
-                })}
-                value={percent}
-              >
-                <div>Done!</div>
-              </CircularProgressbarWithChildren>
-            )}
-          </div>
-        </div>
+  return (
+    <form onSubmit={handleSubmit} className="edit-goal-form">
+      <div>I want to read {type === "minutes" && "for"}</div>
+      <div className="edit-goal-input">
+        <FormInput type="text" setter={setAmount} placeholder={goal.amount}></FormInput>
+        <select value={type} className="select-type" onChange={(e) => setType(e.target.value)}>
+          <option>books</option>
+          <option>pages</option>
+          <option>minutes</option>
+        </select>
+        <p>per</p>
+        <select value={period} className="select-period" onChange={(e) => setPeriod(e.target.value)}>
+          <option>year</option>
+          <option>month</option>
+          <option>day</option>
+        </select>
       </div>
-    );
-  }
+
+      <button type="submit" className="edit-goal-btn">
+        Update Goal
+      </button>
+    </form>
+  );
 }
 
 function GoalCard({ goal }) {
-  const amount = goal["amount"];
-  const type = goal["type"];
-  let period = "";
-  let periodName = goal["period"];
-  const user = useUser();
+  const { amount, type, period } = goal;
+  const [showEditGoal, setShowEditGoal] = useState(false);
   const api = useApi();
 
-  let y_m_d = yearMonthDay();
-
-  if (periodName === "year") {
-    period = y_m_d.year;
-  }
-  if (periodName === "month") {
-    period = y_m_d.month;
-  }
-
   const { data: progress } = useQuery({
-    queryKey: ["progress", user.id, type, periodName],
-    queryFn: () =>
-      api
-        .get(`/goals/progress/${type}/${periodName}`)
-        .then((response) => response.json()),
+    queryKey: [goal.id],
+    queryFn: () => api.get(`/goals/progress/${goal.id}`).then((response) => response.json()),
   });
 
-  let percent = 0;
-  if (progress) {
-    percent = Math.floor((progress / amount) * 100);
-  }
+  const handleEditIconClick = (event) => {
+    event.preventDefault();
+    setShowEditGoal(true);
+  };
+
   return (
-    <div className="goal-card">
-      <div className="goal-card-left">
+    <>
+      <div className="goal-card">
+        <div class="overlay">
+          <i onClick={handleEditIconClick} class="fas fa-edit edit-icon"></i>
+        </div>
+
+        <div className="goal-header">
+          {period === "year" && "Yearly Goal"}
+          {period === "month" && "Monthly Goal"}
+          {period === "day" && "Daily Goal"}
+        </div>
+
         <div className="goal-period">
-          <div className="period-name">{periodName}</div>
-          <div className="period-value">{period}</div>
+          {period === "year" && yearMonthDay().year()}
+          {period === "month" && yearMonthDay().month()}
+          {period === "day" && yearMonthDay().day()}
         </div>
-        <div className="goal-progress">
-          <div className="goal-progress-name">{type} Read</div>
-          <div className="goal-progress-value">
-            {progress} of {amount}
-          </div>
+
+        <div className="progress-circle">
+          <ProgressCircle percent={`${Math.floor((progress / amount) * 100) ? progress : 0}`}>
+            <div>{`${progress ? progress : 0} of ${amount}`}</div>
+            <p>{type}</p>
+          </ProgressCircle>
         </div>
       </div>
-      <div className="progress-circle">
-        <CircularProgressbar
-          styles={buildStyles({
-            pathColor: "#8c6a4d",
-            trailColor: "#eee",
-          })}
-          value={percent}
-          text={`${percent}%`}
-        ></CircularProgressbar>
-      </div>
-    </div>
+
+      <Popup isOpen={showEditGoal} onClose={() => setShowEditGoal(false)}>
+        <EditGoalForm goal={goal} setShowEditGoal={setShowEditGoal}></EditGoalForm>
+      </Popup>
+    </>
   );
 }
 
-function MyGoals() {
-  const user = useUser();
+function Goals() {
   const api = useApi();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["goals", user.id],
+  const { data: goals, isLoading } = useQuery({
+    queryKey: ["goals"],
     queryFn: () => api.get("/goals").then((response) => response.json()),
   });
 
-  if (data) {
-    const yearlyGoal = data.filter((goal) => goal.period === "year")[0];
-    const monthlyGoal = data.filter((goal) => goal.period === "month")[0];
-    const todaysGoal = data.filter((goal) => goal.period === "day")[0];
-
+  if (goals) {
     return (
       <>
-        <div className="goals-container">
-          <GoalCard goal={yearlyGoal}></GoalCard>
-          <GoalCard goal={monthlyGoal}></GoalCard>
-        </div>
+        <GoalCard goal={goals[0]}></GoalCard>
+        <GoalCard goal={goals[1]}></GoalCard>
       </>
     );
   } else {
@@ -191,12 +127,4 @@ function MyGoals() {
   }
 }
 
-function Goals() {
-  return (
-    <>
-      <MyGoals></MyGoals>
-    </>
-  );
-}
-
-export { Goals, TodaysGoal };
+export { Goals };

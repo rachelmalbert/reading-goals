@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
-import Popup from "../components/Popup";
+import React, { useEffect } from "react";
 import "../styles/Timer.css";
 
-function Stopwatch({ time, setTime }) {
-  const [isRunning, setIsRunning] = useState(false);
-
+function Stopwatch({ time, setTime, isRunning, setIsRunning, children }) {
   const toggleStopwatch = () => {
     setIsRunning((prev) => !prev);
   };
@@ -33,25 +30,31 @@ function Stopwatch({ time, setTime }) {
     let remaining_seconds = time - hours * 3600;
     const minutes = Math.floor(remaining_seconds / 60);
     const seconds = time % 60;
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   return (
-    <div>
-      <div>
+    <div className="stopwatch-container">
+      <div className="time-display">
         <p>{formatTime(time)}</p>
-        <button onClick={toggleStopwatch}>
+      </div>
+      <div className="button-group">
+        <button onClick={toggleStopwatch} className={`btn ${isRunning ? "pause" : "start"}`}>
           {isRunning ? "Pause" : "Start"}
         </button>
-        <button onClick={resetStopwatch}>Reset</button>
-        {/* <button onClick={handleSubmitStopwatch} style={{ margin: "10px" }}>
-          Submit
-        </button> */}
+        <button onClick={resetStopwatch} className="btn reset">
+          Reset
+        </button>
       </div>
+      {children}
     </div>
   );
+}
+
+{
+  /* <button onClick={handleSubmitStopwatch} style={{ margin: "10px" }}>
+          Submit
+        </button> */
 }
 
 // function TimerPopup({}) {

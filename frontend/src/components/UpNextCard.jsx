@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser, useApi } from "../hooks";
 import { useNavigate } from "react-router-dom";
+
 import "../styles/UpNextCard.css";
 
 function UpNextCard({ user_book }) {
@@ -10,10 +11,7 @@ function UpNextCard({ user_book }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: () =>
-      api
-        .put(`/user/start/${user_book["book"].id}`, user_book["book"].id)
-        .then((response) => response.json()),
+    mutationFn: () => api.put(`/user/start/${user_book["book"].id}`, user_book["book"].id).then((response) => response.json()),
     onSuccess: () => {
       queryClient.invalidateQueries(["books", user.id]);
       navigate("/bookshelf");

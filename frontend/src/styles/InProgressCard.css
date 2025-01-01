@@ -19,18 +19,6 @@ progress {
   transition: opacity 0.3s ease;
 }
 
-.timer-popup {
-  display: flex;
-  flex-direction: column;
-  /* background-color: black; */
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
 .in-progress-card .info {
   display: flex;
   flex-direction: column;
@@ -89,11 +77,4 @@ progress {
   .in-progress-card {
     width: 200px; /* Narrower cards on small screens */
   }
-}
-
-/* TIMER POPUP */
-
-.timer-book-info {
-  display: flex;
-  justify-content: center;
 }

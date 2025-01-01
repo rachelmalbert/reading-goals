@@ -5,7 +5,7 @@ const Popup = ({ isOpen, onClose, children }) => {
 
   return (
     <div className="popup">
-      <div className="overlay" onClick={onClose}></div>
+      <div className="popup-overlay" onClick={onClose}></div>
       <div className="content">
         <button className="close-button" onClick={onClose}>
           Close
