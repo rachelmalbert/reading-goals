@@ -49,6 +49,12 @@ def create_user(*, session: db_dependency, registration: UserRegistrationRequest
         **registration.model_dump(),
         hashed_password=pwd_context.hash(registration.password),
     )
+    # Make sure username doesn't already exist
+    query = select(UserInDB).where(UserInDB.username==new_user.username)
+    user = session.exec(query).first()
+    if (user):
+        raise HTTPException(status_code=409, detail="Username already taken")
+    
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
@@ -61,8 +67,6 @@ def create_user(*, session: db_dependency, registration: UserRegistrationRequest
     session.commit()
     session.refresh(daily_goal)
     session.refresh(yearly_goal)
-
-    
     return new_user
 
 @auth_router.post("/token", response_model=AccessTokenResponse)

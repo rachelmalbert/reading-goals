@@ -8,6 +8,7 @@ from app.routers.goals import goals_router
 from app.routers.dashboard import dashboard_router
 from app.routers.sessions import sessions_router
 from app.routers.stats import stats_router
+from app.routers.user_book import user_book_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -37,6 +38,8 @@ app.include_router(dashboard_router)
 app.include_router(goals_router)
 app.include_router(sessions_router)
 app.include_router(stats_router)
+app.include_router(user_book_router)
+
 
 
 

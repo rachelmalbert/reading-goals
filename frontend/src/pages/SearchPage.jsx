@@ -12,7 +12,7 @@ function AddBook({ book }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: () => api.post(`/user/checkout/${book.id}`, book.id).then((response) => response.json()),
+    mutationFn: () => api.post(`/user_book/checkout/${book.id}`, book.id).then((response) => response.json()),
     onSuccess: () => {
       console.log("Book checked out successfully!");
       queryClient.invalidateQueries(["books", user.id]);

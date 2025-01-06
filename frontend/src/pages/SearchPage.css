@@ -13,10 +13,10 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid orange;
+  /* border: 2px solid orange; */
   width: 100%;
   overflow: hidden;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 
 .search-bar {
@@ -31,16 +31,26 @@ a:hover {
 .search-btn {
   /* border: 2px solid pink; */
   background-color: #8c9a5b;
-  width: 10%;
-  height: 70%;
+  width: 15%;
+  height: 72%;
   padding: 0px !important;
+  border: none;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.search-page input {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .page-title {
   font-size: 32px;
   font-weight: 700;
   color: #5e5e5e;
-  margin-bottom: 20px;
+  margin-bottom: 0rem;
 }
 
 .loading {
@@ -49,16 +59,17 @@ a:hover {
 }
 
 .books-list {
-  padding: 1rem;
+  padding: 1rem 3rem;
   /* border: 3px solid green; */
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Creates exactly two columns */
+  /* grid-template-columns: repeat(2, 1fr);  */
   gap: 20px; /* Adds space between grid items */
   width: 100%;
+  overflow-y: scroll;
 }
 
 .sticky-section {
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -67,7 +78,7 @@ a:hover {
   position: sticky;
   top: 0; /* The distance from the top of the viewport */
   z-index: 1000; /* Ensure the sticky section stays above other content */
-  background-color: #fff; /* Optional: Set background color to avoid content overlap */
+  background-color: #f1f1f1;
   padding: 10px; /* Optional: Add padding */
 }
 

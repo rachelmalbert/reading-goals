@@ -31,12 +31,12 @@ function NowReadingCard() {
 
   const { data: current_book } = useQuery({
     queryKey: ["current_book", user.id],
-    queryFn: () => api.get("/user/current-book").then((response) => response.json()),
+    queryFn: () => api.get("/user_book/current-book").then((response) => response.json()),
   });
 
   const { data: currentUserBookLink } = useQuery({
     queryKey: ["currentUserBookLink"],
-    queryFn: () => api.get("/user/current-user-book-link").then((response) => response.json()),
+    queryFn: () => api.get("/user_book/current-user-book-link").then((response) => response.json()),
   });
 
   if (!current_book) {
@@ -58,7 +58,7 @@ function NowReadingCard() {
             Page {currentUserBookLink.user_book_link.current_page} of {currentUserBookLink.book.page_count}
           </div>
           <button onClick={handleClick} className="continue-btn">
-            Continue Reading
+            Continue
           </button>
           <Popup isOpen={showUpdatePopup} onClose={() => setShowUpdatePopup(false)}>
             <UpdateBook user_book={currentUserBookLink} setShowUpdatePopup={setShowUpdatePopup} type={"read"} />

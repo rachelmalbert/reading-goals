@@ -29,11 +29,11 @@ def get_total_stats(session: db_dependency, user: user_dependency):
     stats = db.get_total_stats(session, user.id)
     return stats
 
-@stats_router.get("/today")
-def get_todays_stats(session: db_dependency, user: user_dependency):
-    """Get todays stats for user"""
-    stats = db.get_todays_stats(session, user.id)
-    return stats
+# @stats_router.get("/today")
+# def get_todays_stats(session: db_dependency, user: user_dependency):
+#     """Get todays stats for user"""
+#     stats = db.get_todays_stats(session, user.id)
+#     return stats
 
 # @stats_router.get("/month")
 # def get_monthly_stats(session: db_dependency, user: user_dependency):

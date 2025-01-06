@@ -64,7 +64,7 @@ function GoalCard({ goal }) {
   const api = useApi();
 
   const { data: progress } = useQuery({
-    queryKey: [goal.id],
+    queryKey: ["goal-progress", goal.id],
     queryFn: () => api.get(`/goals/progress/${goal.id}`).then((response) => response.json()),
   });
 
@@ -76,8 +76,8 @@ function GoalCard({ goal }) {
   return (
     <>
       <div className="goal-card">
-        <div class="overlay">
-          <i onClick={handleEditIconClick} class="fas fa-edit edit-icon"></i>
+        <div className="overlay">
+          <i onClick={handleEditIconClick} className="fas fa-edit edit-icon"></i>
         </div>
 
         <div className="goal-header">
@@ -93,7 +93,7 @@ function GoalCard({ goal }) {
         </div>
 
         <div className="progress-circle">
-          <ProgressCircle percent={`${Math.floor((progress / amount) * 100) ? progress : 0}`}>
+          <ProgressCircle percent={`${progress ? (progress >= amount ? 100 : Math.floor((progress / amount) * 100)) : 0}`}>
             <div>{`${progress ? progress : 0} of ${amount}`}</div>
             <p>{type}</p>
           </ProgressCircle>

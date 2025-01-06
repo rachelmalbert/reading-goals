@@ -27,13 +27,13 @@ function BookshelfPage() {
 
   const { data } = useQuery({
     queryKey: ["books", user.id],
-    queryFn: () => api.get("/user/books").then((response) => response.json()),
+    queryFn: () => api.get("/user_book/books").then((response) => response.json()),
   });
 
   if (data) {
     const inProgressBooks = data.filter((book) => book.status === "in progress");
     const upNextBooks = data.filter((book) => book.status === "up next");
-    const finishedBooks = data.filter((book) => book.status === "finished");
+    const finishedBooks = data.filter((book) => book.status === "finished").reverse();
     return (
       <div className="bookshelf">
         <div className="bookshelf-content">
@@ -56,7 +56,11 @@ function BookshelfPage() {
           </div>
           <div className="bookshelf-right">
             {/* Finished */}
-            <h3>Finished </h3>
+
+            <h3>
+              Finished
+              <i className="fa-solid fa-square-check checkmark"></i>
+            </h3>
             {finishedBooks.map((user_book) => (
               <FinishedBookCard key={user_book["book"].id} user_book={user_book}></FinishedBookCard>
             ))}

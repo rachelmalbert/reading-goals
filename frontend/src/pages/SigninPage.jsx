@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { useAuth } from "../hooks";
 import "./SigninPage.css";
-// import books from "../assets/images/books.png";
 
 import logo from "../assets/images/rg-logo.png";
 

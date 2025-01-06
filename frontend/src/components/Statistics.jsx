@@ -22,7 +22,6 @@ const Statistics = () => {
 
   useEffect(() => {
     if (stats) {
-      console.log("stats", stats);
       let data = {
         labels: stats["labels"],
         datasets: [
@@ -83,7 +82,7 @@ const Statistics = () => {
           </div>
           <div className="goal-type-toggle">
             {["pages", "minutes"].map((goalType) => (
-              <div>
+              <div key={goalType}>
                 <label htmlFor={goalType}>{goalType}</label>
                 <button
                   className={`toggle-radio ${type === goalType ? "active" : ""}`}

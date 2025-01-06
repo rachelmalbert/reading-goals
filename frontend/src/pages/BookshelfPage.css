@@ -61,7 +61,7 @@
 .bookshelf-up-next {
   display: flex;
   justify-content: flex-start;
-  overflow: hidden;
+  /* overflow: hidden; */
   overflow-x: scroll;
   gap: 1rem;
   width: 100%;
@@ -132,4 +132,8 @@ p {
   border-radius: 5px;
   letter-spacing: 0.5px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.checkmark {
+  padding-left: 1rem;
 }

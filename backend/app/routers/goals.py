@@ -24,10 +24,10 @@ db_dependency = Annotated[Session, Depends(db.get_session)]
 #     """Create a new goal"""
 #     return db.add_goal(session, user, period, type, amount, books_per_year)
 
-@goals_router.post("/add", response_model=GoalInDB)
-def add_goal(session: db_dependency, user: user_dependency, goal: GoalRequest):
-    """Create a new goal"""
-    return db.add_goal(session, user, goal)
+# @goals_router.post("/add", response_model=GoalInDB)
+# def add_goal(session: db_dependency, user: user_dependency, goal: GoalRequest):
+#     """Create a new goal"""
+#     return db.add_goal(session, user, goal)
 
 
 # ------------------------------------- #

@@ -27,27 +27,29 @@ const CurrentBookCard = ({ user_book }) => {
   );
 };
 
-function UpdateForm({ onSubmit, error }) {
+function UpdateForm({ addSession, showFinishBookButton, finishBook, error }) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [curPage, setCurPage] = useState(0);
-  let today = new Date().toISOString(); // UTC
 
+  let today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  today = `${year}-${month}-${day}`;
   const [date, setDate] = useState(today);
-  console.log("today", today);
-  console.log("date", date);
 
   const handleAddSession = (e) => {
     e.preventDefault();
-    let mins = Number(hours * 60) + Number(minutes);
+    let time = Number(hours * 60) + Number(minutes);
+    addSession(e, time, date, curPage);
+  };
 
-    // Step 3: Combine the date and time into a DateTime string
-    let dateTimeString = date; // YYYY-MM-DDTHH:mm:ss
-
-    // Step 4: Convert it into a Date object
-    // let dateTime = new Date(dateTimeString);
-
-    onSubmit(e, mins, date, curPage);
+  const handleFinishBook = (e) => {
+    e.preventDefault();
+    let time = Number(hours * 60) + Number(minutes);
+    addSession(e, time, date, curPage);
+    finishBook(e);
   };
 
   return (
@@ -62,20 +64,26 @@ function UpdateForm({ onSubmit, error }) {
         Add Session
       </button>
       {error && <p>{error}</p>}
+      {showFinishBookButton && <button onClick={handleFinishBook}>Finish Book</button>}
     </form>
   );
 }
 
-function ReadForm({ onSubmit }) {
-  const [time, setTime] = useState(0);
+function ReadForm({ addSession, showFinishBookButton, finishBook }) {
+  const [time, setTime] = useState(3900);
   const [curPage, setCurPage] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
   const handleAddSession = (event) => {
     event.preventDefault();
-
     let mins = Math.floor(time / 60);
-    onSubmit(event, mins, CurrentDateTime(), curPage);
+    addSession(event, mins, CurrentDateTime(), curPage);
+  };
+
+  const handleFinishBook = (e) => {
+    e.preventDefault();
+    addSession(e, time, CurrentDateTime(), curPage);
+    finishBook(e);
   };
 
   return (
@@ -91,6 +99,7 @@ function ReadForm({ onSubmit }) {
         <button className={`add-session-btn ${isRunning ? "disabled" : ""}`} type="button" onClick={handleAddSession} disabled={isRunning}>
           Add Session
         </button>
+        {showFinishBookButton && <button onClick={handleFinishBook}>Finish Book</button>}
       </Stopwatch>
     </div>
   );
@@ -112,12 +121,12 @@ function UpdateBook({ user_book, setShowUpdatePopup, type }) {
     mutationFn: (newSession) => api.post("/sessions/add", newSession).then((response) => response.json()),
     onSuccess: () => {
       queryClient.invalidateQueries(["books", user.id]);
-      navigate("/bookshelf");
+      // navigate("/bookshelf");
     },
   });
 
   const finishBookMutation = useMutation({
-    mutationFn: () => api.put(`/user/finish/${book_id}`, "").then((response) => response.json()),
+    mutationFn: () => api.put(`/user_book/finish/${book_id}`, "").then((response) => response.json()),
     onSuccess: () => {
       queryClient.invalidateQueries(["books", user.id]);
       navigate("/bookshelf");
@@ -131,19 +140,16 @@ function UpdateBook({ user_book, setShowUpdatePopup, type }) {
       user_id: user.id,
       book_id: book_id,
       cur_page: curPage,
-      minutes: Math.floor(time), // time is in seconds
+      minutes: Math.floor(time),
       created_at: dateTime,
     };
-
-    console.log("DATETIME", dateTime);
-
     // Page number entered is less than where the user started
     if (isNaN(curPage) || curPage <= prev_page) {
       setError(`Please enter a page number greater than the one you started reading at today,  (pg. ${prev_page})`);
       return;
     }
     // Page number entered is greater than amount of pages in book
-    if (curPage >= page_count) {
+    if (curPage >= page_count && !showFinishBookButton) {
       setError(`The page number you entered is greater than the amount of pages in the book (${page_count} pages)`);
       setShowFinishBookButton(true);
       return;
@@ -156,15 +162,18 @@ function UpdateBook({ user_book, setShowUpdatePopup, type }) {
 
   const finishBook = (e) => {
     e.preventDefault();
+    // addDailyStat(e, time, dateTime, page_count);
     finishBookMutation.mutate();
+    setShowFinishBookButton(false);
   };
 
   return (
     <div className="update-popup">
       <CurrentBookCard user_book={user_book}></CurrentBookCard>
-      {type === "update" && <UpdateForm onSubmit={addDailyStat} error={error} />}
-      {type === "read" && <ReadForm onSubmit={addDailyStat} />}
-      {showFinishBookButton && <button onClick={finishBook}>Finish Book</button>}
+      {type === "update" && (
+        <UpdateForm addSession={addDailyStat} showFinishBookButton={showFinishBookButton} finishBook={finishBook} error={error} />
+      )}
+      {type === "read" && <ReadForm addSession={addDailyStat} />}
     </div>
   );
 }

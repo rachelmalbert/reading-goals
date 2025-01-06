@@ -50,38 +50,4 @@ function Stopwatch({ time, setTime, isRunning, setIsRunning, children }) {
     </div>
   );
 }
-
-{
-  /* <button onClick={handleSubmitStopwatch} style={{ margin: "10px" }}>
-          Submit
-        </button> */
-}
-
-// function TimerPopup({}) {
-//   return (
-//     <Popup isOpen={showTimerPopup} onClose={() => setShowTimerPopup(false)}>
-//       <div className="timer-popup">
-//         <h3>Now Reading</h3>
-//         <div className="timer-book-info">
-//           <img height="193" width="128" src={user_book["book"].cover_url}></img>
-//         </div>
-//         <Stopwatch time={time} setTime={setTime}></Stopwatch>
-//         <button onClick={handleSubmitStopwatch}>Done Reading</button>
-//         <Popup
-//           isOpen={showEnterPagePopup}
-//           onClose={() => setShowEnterPagePopup(false)}
-//         >
-//           <form onSubmit={addDailyStat}>
-//             <FormInput
-//               name="What page did you get to?"
-//               setter={setPages}
-//             ></FormInput>
-//             <button type="submit">Add Session</button>
-//           </form>
-//         </Popup>
-//       </div>
-//     </Popup>
-//   );
-// }
-
 export default Stopwatch;

@@ -4,10 +4,10 @@ const FormInput = ({ setter, ...props }) => {
   // Every time the input is changed, set the new value and call the onChange function
   const handleChange = (e) => {
     if (setter) {
-      setter(e.target.value);
+      setter(e.target.value.toLowerCase());
     }
     if (props.onChange) {
-      props.onChange(e.target.value);
+      props.onChange(e.target.value.toLowerCase());
     }
   };
 

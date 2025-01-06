@@ -1,0 +1,171 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Logo Image */
+.logo {
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  height: 10rem; /* Adjust the size of the logo */
+  width: auto;
+}
+
+.logo-title {
+  font-family: "Pacifico", cursive; /* Applying the cursive font */
+  font-size: 1.8rem; /* Big, bold size for the title */
+  color: #3c2a3d; /* Dark brown color */
+  margin: 0;
+  letter-spacing: 1px; /* Slight spacing to make it look more elegant */
+  text-transform: capitalize; /* Capitalizes each word for a more formal look */
+}
+
+/* Right half of the screen (form) */
+.signup-form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #e2d1b3; /* Soft earthy yellow */
+}
+
+/* Form styles */
+form {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Forgot Password Link Styling */
+.forgot-password-link {
+  margin-top: -0.25rem;
+  text-align: right; /* Align the link to the right */
+  padding-bottom: 1.5rem;
+}
+
+.forgot-password-text {
+  font-size: 0.8rem;
+  color: #6b8e23; /* Olive green color */
+  text-decoration: none; /* Remove underline by default */
+}
+
+.forgot-password-text:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+/* Sign-up link styling */
+.signup-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 16px;
+}
+
+.signup-link-text {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.signup-link-text > a {
+  font-size: 14px;
+  color: #6b8e23; /* Olive green color */
+  text-decoration: none;
+  font-weight: bold;
+  /* font-size: 12px; */
+}
+.signup-link-text:hover {
+  text-decoration: underline;
+}
+
+/* Heading styling */
+h1 {
+  font-size: 2rem;
+  color: #3c2a3d;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Form input styling */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #d4b69c;
+  border-radius: 5px;
+  background-color: #f4f1e1;
+  color: #4b4b3b;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: #a59a88;
+  outline: none;
+}
+
+/* Button styling */
+.signup-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #6b8e23;
+  color: #ffffff;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #556b2f;
+}
+.error-message {
+  display: none; /* Hidden by default */
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.error {
+  display: block;
+}
+
+/* Media Query for responsiveness */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-image {
+    height: 250px; /* Limit the height for small screens */
+  }
+
+  .login-form-container {
+    padding: 2rem;
+  }
+}

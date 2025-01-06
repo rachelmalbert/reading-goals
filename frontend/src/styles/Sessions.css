@@ -6,7 +6,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for a modern touch */
   padding: 20px;
-  height: 50%;
+  height: 100%;
   overflow: hidden;
   background-color: white;
 }
@@ -15,12 +15,8 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  max-height: 400px;
+  /* max-height: 400px; */
   padding-right: 15px; /* Adjust for scrollbar */
-}
-
-.date-section {
-  margin-bottom: 25px;
 }
 
 .date-section h4 {
@@ -28,6 +24,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 8px;
+  align-self: center;
 }
 
 .session-list {
@@ -37,8 +34,10 @@
 }
 
 .session-item {
+  gap: 0.5rem;
+  display: flex;
   background-color: #fff; /* Clean white background for session items */
-  padding: 20px;
+  /* padding: 20px; */
   margin-bottom: 15px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Slightly more pronounced shadow */
@@ -53,7 +52,14 @@
 .session-title {
   font-weight: bold;
   color: #6b4f3a; /* Rich brown color for the title */
-  font-size: 1.2rem;
+  font-size: 0.5rem;
+}
+
+.session-img {
+  /* scale: 20%; */
+  width: 50%;
+  margin: 0;
+  padding: 0;
 }
 
 .session-details {

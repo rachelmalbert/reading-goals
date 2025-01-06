@@ -15,7 +15,6 @@ from app.schema import (
         BookResponse,
         DailyStatInDB,
         GoalInDB,
-        UpdateStatsRequest,
         SessionRequest,
         SessionInDB,
         TotalStatsResponse,
@@ -37,9 +36,11 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-# --------- #
-#   USERS   #
-# --------- #
+
+
+# --------------#
+#   USER_BOOK   #
+# --------------#
 
 # def get_user_by_id(session: Session, user_id: int):
 #         """Get user by id"""
@@ -48,20 +49,132 @@ def get_session():
 #                 raise HTTPException(status_code=404, detail="User not found")
 #         return user
 
+def get_current_book(session: Session, user_id: int):
+      """Gets the book the user is currently reading"""
+      sessions = get_sessions(session, user_id)
+      if not sessions:
+          return None
+      # Get all in progress user_book_links
+      user_book_links = get_user_book_links(session, user_id)
+      in_progress=set()
+      for user_book in user_book_links:
+            if user_book.status == "in progress":
+                 in_progress.add(user_book.book.id)
+      current_sessions=[]
+      for sesh in sessions:
+            if sesh.book_id in in_progress:
+                  current_sessions.append(sesh)
+      most_recent = current_sessions[0]
+      current_book = get_book_by_id(session, most_recent.book_id)
+      return current_book
+#       sessions = get_sessions(session, user_id)
+#       if not sessions:
+#           return None
+#       most_recent = sessions[0]
+#       for read_session in sessions:
+#             if read_session.created_at > most_recent.created_at:
+#                 most_recent = read_session
+#       return most_recent
+
+def get_user_book_links(session: Session, user_id: int):
+        """Get all user book links belonging to user"""
+        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id)
+        user_book_links = session.exec(query).all()
+        res = []
+        for link in user_book_links:
+                add = BookResponse(book=link.book, status=link.status, minutes_spent=link.minutes_spent, authors=link.book.authors, start_date=link.start_date, current_page=link.current_page, finish_date=link.finish_date)
+                res.append(add)
+        return res
+        
+def get_user_book_link(session: Session, user_id: int, book_id: str):
+        """Get user book link given user_id and book_id"""
+        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id, UserBookLinkInDB.book_id==book_id)
+        user_book_link = session.exec(query).first()
+        if user_book_link:
+            return user_book_link
+        else:
+               raise HTTPException(status_code=404, detail="User Book Link not found")
+
+def get_current_user_book_link(session: Session, user_id: int):
+        """Gets the user book link of current book"""
+        # most recent session:
+        current_book = get_current_book(session, user_id)
+        print("CURB$", current_book)
+        if not current_book:
+              return None
+        current_user_book_link = get_user_book_link(session, user_id, current_book.id)
+        if current_user_book_link:
+            return {"user_book_link": current_user_book_link, "book": current_user_book_link.book}
+        else:
+               raise HTTPException(status_code=404, detail="User Book Link not found")
+
 def get_finished_books(session: Session):
     """Get finished books"""
     query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished")
     finished = session.exec(query).all()
     return finished
 
-def get_finished_books_by_year(session: Session, year: int):
-    """Get all user_books that were finished in the year"""
-    query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished", UserBookLinkInDB.finish_date.isnot(None), extract('year', UserBookLinkInDB.finish_date) == year )
-    finished = session.exec(query).all()
-    for book in finished:
-        if book.finish_date and book.finish_date.year == 2024:
-            print("yay!")
-    return finished
+def start_book(session: Session, user_id: int, book_id: str):
+        """Start reading book"""
+        user_book_link = get_user_book_link(session, user_id, book_id)
+        user_book_link.start_date = datetime.now()
+        user_book_link.status = "in progress"
+        session.commit()
+        session.refresh(user_book_link)
+        return user_book_link
+
+def finish_book(session: Session, user_id: int, book_id: str):
+        """Finish reading book"""
+        user_book_link = get_user_book_link(session, user_id, book_id)
+        user_book_link.finish_date = datetime.now()
+        user_book_link.status = "finished"
+        session.commit()
+        session.refresh(user_book_link)
+        return user_book_link
+
+def update_status(session: Session, user_id: int, book_id: str, status: str):
+       """Update user_book_link status"""
+       user_book_link = get_user_book_link(session, user_id, book_id)
+       user_book_link.status = status
+       session.commit()
+       session.refresh(user_book_link)
+       return user_book_link.status
+
+def update_book_pages(session: Session, user_id: int, book_id: str, cur_page: int, prev_page: int):
+       """Update current page of book belonging to user"""
+       user_book_link = get_user_book_link(session, user_id, book_id)
+       user_book_link.previous_page = prev_page
+       user_book_link.current_page = cur_page
+       session.commit()
+       session.refresh(user_book_link)
+       return user_book_link
+
+def update_book_minutes(session: Session, user_id: int, book_id: str, minutes: int):
+        """Update minutes spent reading book belonging to user"""
+        user_book_link = get_user_book_link(session, user_id, book_id)
+        user_book_link.minutes_spent += minutes
+        session.commit()
+        session.refresh(user_book_link)
+        return user_book_link
+
+def delete_book(session: Session, user_id: int, book_id: str):
+        """Delete book with id of book_id from the user's library"""
+        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id, UserBookLinkInDB.book_id==book_id)
+        book_to_delete = session.exec(query).first()
+        if book_to_delete is None:
+                raise HTTPException(status_code=404, detail="Book not found in user library")
+        session.delete(book_to_delete)
+        session.commit()
+   
+
+# def get_finished_books_by_year(session: Session, year: int):
+#     """Get all user_books that were finished in the year"""
+#     query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished", UserBookLinkInDB.finish_date.isnot(None), extract('year', UserBookLinkInDB.finish_date) == year )
+#     finished = session.exec(query).all()
+#     for book in finished:
+#         if book.finish_date and book.finish_date.year == 2024:
+#             print("yay!")
+#     return finished
 
     
 def get_book_progress(session: Session, user_id: int, book_id: str):
@@ -106,47 +219,6 @@ def add_author(session: Session, authors_name: str):
         session.refresh(new_author)
         return new_author
 
-def get_current_book(session: Session, user_id: int):
-      """Gets the book the user is currently reading"""
-      sessions = get_sessions(session, user_id)
-      if not sessions:
-          return None
-      most_recent = sessions[0]
-      for read_session in sessions:
-            if read_session.created_at > most_recent.created_at:
-                most_recent = read_session
-      return most_recent
-
-
-def get_user_book_links(session: Session, user_id: int):
-        """Get all user book links belonging to user"""
-        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id)
-        user_book_links = session.exec(query).all()
-        res = []
-        for link in user_book_links:
-                add = BookResponse(book=link.book, status=link.status, minutes_spent=link.minutes_spent, authors=link.book.authors, start_date=link.start_date, current_page=link.current_page, finish_date=link.finish_date)
-                res.append(add)
-        return res
-        
-def get_user_book_link(session: Session, user_id: int, book_id: str):
-        """Get user book link given user_id and book_id"""
-        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id, UserBookLinkInDB.book_id==book_id)
-        user_book_link = session.exec(query).first()
-        if user_book_link:
-            return user_book_link
-        else:
-               raise HTTPException(status_code=404, detail="User Book Link not found")
-
-def get_current_user_book_link(session: Session, user_id: int):
-        """Gets the user book link of current book"""
-        current_book = get_current_book(session, user_id)
-        current_user_book_link = get_user_book_link(session, user_id, current_book.book_id)
-        if current_user_book_link:
-            return {"user_book_link": current_user_book_link, "book": current_user_book_link.book}
-        else:
-               raise HTTPException(status_code=404, detail="User Book Link not found")
-
-      
 
 def get_author(session: Session, authors_name: str):
         """Get author by name"""
@@ -176,70 +248,18 @@ async def get_google_book_by_id(google_id: str) -> Book:
                         cover_url=image_links.get("thumbnail", None),
                         authors=book["volumeInfo"].get("authors", None))
         return add
-  
-def start_book(session: Session, user_id: int, book_id: str):
-        """Start reading book"""
-        user_book_link = get_user_book_link(session, user_id, book_id)
-        user_book_link.start_date = datetime.now()
-        user_book_link.status = "in progress"
-        session.commit()
-        session.refresh(user_book_link)
-        return user_book_link
-
-def finish_book(session: Session, user_id: int, book_id: str):
-        """Finish reading book"""
-        user_book_link = get_user_book_link(session, user_id, book_id)
-        user_book_link.finish_date = datetime.now()
-        user_book_link.status = "finished"
-        session.commit()
-        session.refresh(user_book_link)
-        return user_book_link
-
-def update_status(session: Session, user_id: int, book_id: str, status: str):
-       """Update user_book_link status"""
-       user_book_link = get_user_book_link(session, user_id, book_id)
-       user_book_link.status = status
-       session.commit()
-       session.refresh(user_book_link)
-       return user_book_link.status
-        
-def update_book_pages(session: Session, user_id: int, book_id: str, cur_page: int, prev_page: int):
-       """Update current page of book belonging to user"""
-       user_book_link = get_user_book_link(session, user_id, book_id)
-       user_book_link.previous_page = prev_page
-       user_book_link.current_page = cur_page
-       session.commit()
-       session.refresh(user_book_link)
-       return user_book_link
-
-def update_book_minutes(session: Session, user_id: int, book_id: str, minutes: int):
-        """Update minutes spent reading book belonging to user"""
-        user_book_link = get_user_book_link(session, user_id, book_id)
-        user_book_link.minutes_spent += minutes
-        session.commit()
-        session.refresh(user_book_link)
-        return user_book_link
-
-def delete_book(session: Session, user_id: int, book_id: str):
-        """Delete book with id of book_id from the user's library"""
-        query = select(UserBookLinkInDB).where(UserBookLinkInDB.user_id==user_id, UserBookLinkInDB.book_id==book_id)
-        book_to_delete = session.exec(query).first()
-        if book_to_delete is None:
-                raise HTTPException(status_code=404, detail="Book not found in user library")
-        session.delete(book_to_delete)
-        session.commit()
 
 # --------- #
 #   GOALS   #
 # --------- #
 
-def add_goal(session : Session, user: UserInDB, goal: GoalRequest):
-    new_goal = GoalInDB(**goal.model_dump(),
-                        user=user)
-    session.add(new_goal)
-    session.commit()
-    session.refresh(new_goal)
-    return new_goal
+# def add_goal(session : Session, user: UserInDB, goal: GoalRequest):
+#     new_goal = GoalInDB(**goal.model_dump(),
+#                         user=user)
+#     session.add(new_goal)
+#     session.commit()
+#     session.refresh(new_goal)
+#     return new_goal
 
 def get_goal(session : Session, goal_id: int):
     """Get the user's goal for the given time period"""
@@ -249,26 +269,24 @@ def get_goal(session : Session, goal_id: int):
 def get_goal_progress(session: Session, user_id: int, goal_id: int):
     """Get the users progress of a goal"""
     goal = get_goal(session, goal_id)
-
     cur_year = datetime.now().year
     cur_month = datetime.now().month
-    if type == "books":
+    if goal.type == "books":
         finished = get_finished_books(session)
-        if goal.period == "yearly":
+        if goal.period == "year":
               return len([book for book in finished if book.finish_date.year == cur_year])
-        if goal.period == "monthly":
+        if goal.period == "month":
               return len([book for book in finished if book.finish_date.month == cur_month and book.finish_date.year == cur_year])         
-    if goal.period == "monthly":
+    if goal.period == "month":
         monthly_stats = get_monthly_stats(session, user_id)[type]
-        print("MON%", monthly_stats)
         return monthly_stats
 
-    if goal.period == "daily":
+    if goal.period == "day":
         daily_stats =  get_todays_stats(session, user_id)
         if daily_stats:
-            if type == "minutes":
+            if goal.type == "minutes":
                 return  daily_stats.minutes
-            if type == "pages":
+            if goal.type == "pages":
                 return daily_stats.type
         else: return 0
     
@@ -283,8 +301,6 @@ def update_goal(session : Session, user: UserInDB, goal_id: int, goalUpdate: Goa
     session.commit()
     session.refresh(goal)
     return goal
- 
-
     
 # --------- #
 #  SESSIONS #
@@ -298,7 +314,6 @@ def add_session(session: Session, user_id: int, new_session: SessionRequest):
        cur_page = new_session.cur_page
        minutes = new_session.minutes
        date_created = new_session.created_at
-       print("session created at%", date_created)
 
        pages_read = cur_page - prev_page
        
@@ -332,7 +347,7 @@ def get_sessions_by_date(session: Session, user_id: int):
        for session in sessions:
         session_date = session.created_at
         sessions_by_date[session_date].append(session)
-       return dict(sessions_by_date)
+       return sessions_by_date
 
 # --------- #
 #   STATS   #
@@ -343,7 +358,6 @@ def update_daily_stat(session: Session, user_id: int, y_m_d: date, pages_read: i
         query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id, DailyStatInDB.y_m_d==y_m_d)
    
         daily_stat = session.exec(query).first()
-        print("STAT!!", daily_stat)
         # if the daily stat already exists, update it
         if daily_stat:
                daily_stat.pages += pages_read
@@ -383,12 +397,9 @@ def get_todays_stats(session: Session, user_id: int):
 
 def get_daily_stats(session: Session, user_id: int, date: date):
       """Get daily stat"""
-      current_date = date.strftime('%Y-%m-%d')
-      print("DATEE", date)
 
       query = select(DailyStatInDB).where(DailyStatInDB.user_id==user_id, DailyStatInDB.y_m_d==date)
       stat = session.exec(query).first()
-    #   print("STAT%!", stat)
       if stat:
         return {"minutes": stat.minutes, "pages": stat.pages}
       return {"minutes": 0, "pages": 0}
@@ -410,15 +421,8 @@ def get_chart_data(session: Session, user_id: int, period: str):
         cur_month = current_date.month
         cur_day = current_date.day
         cur_weekday = current_date.weekday()
-
-        print("CURYEAR", cur_day)
-        
-
-        monthly_numbers = rotate_right(list(range(1, 31)), 29 - cur_day)
-
         pages, minutes, labels = [], [], []
         label_numbers = []
-        # cur_number = 0
         stat = {}
         match period:
               case "weekly":
@@ -432,14 +436,10 @@ def get_chart_data(session: Session, user_id: int, period: str):
                         labels.append(calendar.day_abbr[number])
 
                         stat = get_daily_stats(session, user_id, start_date)
-                        print("DATE%", start_date)
-
-                        print("STAT%", stat)
                         pages.append(stat["pages"])
                         minutes.append(stat["minutes"])
                         subtract = subtract - 1
                         start_date = current_date - timedelta(days=subtract)
-
                         
               case "monthly":        
                     _, days_in_month = calendar.monthrange(cur_year, cur_month)
@@ -465,7 +465,6 @@ def get_chart_data(session: Session, user_id: int, period: str):
 # --------- #
 #   Delete  #
 # --------- #     
-
 
 def rotate_right(arr, n):
     # Rotate by n positions to the right

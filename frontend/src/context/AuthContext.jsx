@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 // Get, set, and delete token
 const getToken = () => sessionStorage.getItem("reading_goals_token");
-const storeToken = (token) =>
-  sessionStorage.setItem("reading_goals_token", token);
+const storeToken = (token) => sessionStorage.setItem("reading_goals_token", token);
 const clearToken = () => sessionStorage.removeItem("reading_goals_token");
 
 // Create the Auth Context
@@ -25,6 +24,7 @@ const AuthProvider = ({ children }) => {
   const login = (tokenData) => {
     setToken(tokenData.access_token);
     console.log("logged in and token set");
+    // navigate("/dashboard");
   };
 
   const logout = () => {
@@ -34,11 +34,7 @@ const AuthProvider = ({ children }) => {
 
   const isLoggedIn = !!token;
 
-  return (
-    <AuthContext.Provider value={{ token, login, logout, isLoggedIn }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ token, login, logout, isLoggedIn }}>{children}</AuthContext.Provider>;
 };
 
 // HOOK //
