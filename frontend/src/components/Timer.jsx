@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
 import "../styles/Timer.css";
+import React, { useEffect } from "react";
 
 function Stopwatch({ time, setTime, isRunning, setIsRunning, children }) {
   const toggleStopwatch = () => {

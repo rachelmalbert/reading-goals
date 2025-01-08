@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from backend.main import app
+from app.main import app
 
 def test_checkout_book():
     client = TestClient(app)

@@ -24,7 +24,6 @@ const AuthProvider = ({ children }) => {
   const login = (tokenData) => {
     setToken(tokenData.access_token);
     console.log("logged in and token set");
-    // navigate("/dashboard");
   };
 
   const logout = () => {
@@ -36,10 +35,5 @@ const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={{ token, login, logout, isLoggedIn }}>{children}</AuthContext.Provider>;
 };
-
-// HOOK //
-// const useAuth = () => {
-//   return useContext(AuthContext);
-// };
 
 export { AuthProvider, AuthContext };

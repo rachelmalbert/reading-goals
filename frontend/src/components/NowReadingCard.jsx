@@ -1,10 +1,10 @@
+import "../styles/NowReadingCard.css";
 import { useQuery } from "@tanstack/react-query";
 import { useApi, useUser } from "../hooks";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import UpdateBook from "./UpdateBook";
 import Popup from "./Popup";
-import "../styles/NowReadingCard.css";
-import { useState } from "react";
 
 function AddBookCard({ url }) {
   return (
@@ -12,7 +12,7 @@ function AddBookCard({ url }) {
       <h2>Now Reading</h2>
       <div className="add-book-card">
         <div className="plus-icon">
-          <i className="fas fa-plus"></i> {/* Font Awesome "+" Icon */}
+          <i className="fas fa-plus"></i>
         </div>
         <div className="info">
           <Link to={url}>
@@ -63,7 +63,6 @@ function NowReadingCard() {
           <Popup isOpen={showUpdatePopup} onClose={() => setShowUpdatePopup(false)}>
             <UpdateBook user_book={currentUserBookLink} setShowUpdatePopup={setShowUpdatePopup} type={"read"} />
           </Popup>
-          {/* {showUpdatePopup && <UpdateBook user_book={currentUserBookLink} setShowUpdatePopup={setShowUpdatePopup}></UpdateBook>} */}
         </div>
       )}
     </>

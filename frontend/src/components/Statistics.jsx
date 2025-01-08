@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2"; // Import Bar component instead of Line
 import "../styles/Statistics.css";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "../hooks";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
-// Register Chart.js components for Bar chart
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Statistics = () => {
@@ -28,7 +27,7 @@ const Statistics = () => {
           {
             label: type + " read",
             data: stats[type],
-            backgroundColor: "rgba(76, 175, 80, 0.6)", // Bar color
+            backgroundColor: "rgba(76, 175, 80, 0.6)",
             borderColor: "rgba(76, 175, 80, 1)",
             borderWidth: 1,
           },
@@ -39,7 +38,7 @@ const Statistics = () => {
         responsive: true,
         plugins: {
           legend: {
-            display: false, // Hides the chart legend (key),
+            display: false,
           },
         },
         scales: {
@@ -55,8 +54,6 @@ const Statistics = () => {
               text: type,
             },
             beginAtZero: true,
-            // ticks: { display: [] },
-            // max: 100,
           },
         },
       };

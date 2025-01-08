@@ -5,7 +5,6 @@ from app.routers.books import books_router
 from app.routers.user import user_router
 from app.routers.auth import auth_router
 from app.routers.goals import goals_router
-from app.routers.dashboard import dashboard_router
 from app.routers.sessions import sessions_router
 from app.routers.stats import stats_router
 from app.routers.user_book import user_book_router
@@ -34,14 +33,10 @@ app.add_middleware(
 app.include_router(books_router)
 app.include_router(user_router)
 app.include_router(auth_router)
-app.include_router(dashboard_router)
 app.include_router(goals_router)
 app.include_router(sessions_router)
 app.include_router(stats_router)
 app.include_router(user_book_router)
-
-
-
 
 # ------------------------------------- #
 #              main router              #

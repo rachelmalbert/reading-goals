@@ -1,4 +1,5 @@
 import "../styles/ProgressCircle.css";
+
 function ProgressCircle({ percent, children }) {
   const circumference = 2 * Math.PI * 54;
   return (

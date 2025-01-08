@@ -1,6 +1,6 @@
+import "../styles/InProgressCard.css";
 import { useState } from "react";
 import Popup from "../components/Popup";
-import "../styles/InProgressCard.css";
 import UpdateBook from "./UpdateBook";
 
 function InProgressCard({ user_book }) {
@@ -33,15 +33,8 @@ function InProgressCard({ user_book }) {
             </button>
           </div>
         </div>
-        <Popup
-          isOpen={showUpdatePopup}
-          onClose={() => setShowUpdatePopup(false)}
-        >
-          <UpdateBook
-            user_book={user_book}
-            setShowUpdatePopup={setShowUpdatePopup}
-            type={updateType}
-          />
+        <Popup isOpen={showUpdatePopup} onClose={() => setShowUpdatePopup(false)}>
+          <UpdateBook user_book={user_book} setShowUpdatePopup={setShowUpdatePopup} type={updateType} />
         </Popup>
       </div>
     </>

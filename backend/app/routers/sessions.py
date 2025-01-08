@@ -1,14 +1,12 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.routers.auth import get_current_user
 from app import database as db
 from app.schema import (
-        GoalInDB,
         UserInDB,
         SessionRequest
         )
-
 
 sessions_router = APIRouter(prefix="/sessions", tags=["Sessions"])
 
@@ -31,11 +29,3 @@ def get_sessions(session: db_dependency, user: user_dependency):
        """Get all user reading sessions"""
        sessions = db.get_sessions_by_date(session, user.id)
        return sessions
-
-# ------------------------------------- #
-#              UPDATE                   #
-# ------------------------------------- #
-
-# ------------------------------------- #
-#              DELETE                   #
-# ------------------------------------- #

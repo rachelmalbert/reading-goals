@@ -1,13 +1,11 @@
 import "../styles/Totals.css";
 import { useQuery } from "@tanstack/react-query";
-import { useUser, useApi } from "../hooks";
-
+import { useApi } from "../hooks";
 import books from "../assets/images/books.png";
 import pages from "../assets/images/pages.png";
 import hourglass from "../assets/images/hourglass.png";
 
 function Totals() {
-  // const user = useUser();
   const api = useApi();
 
   const { data, isLoading } = useQuery({

@@ -36,18 +36,9 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-
-
 # --------------#
 #   USER_BOOK   #
 # --------------#
-
-# def get_user_by_id(session: Session, user_id: int):
-#         """Get user by id"""
-#         user = session.get(UserInDB, user_id)
-#         if user is None:
-#                 raise HTTPException(status_code=404, detail="User not found")
-#         return user
 
 def get_current_book(session: Session, user_id: int):
       """Gets the book the user is currently reading"""
@@ -67,14 +58,6 @@ def get_current_book(session: Session, user_id: int):
       most_recent = current_sessions[0]
       current_book = get_book_by_id(session, most_recent.book_id)
       return current_book
-#       sessions = get_sessions(session, user_id)
-#       if not sessions:
-#           return None
-#       most_recent = sessions[0]
-#       for read_session in sessions:
-#             if read_session.created_at > most_recent.created_at:
-#                 most_recent = read_session
-#       return most_recent
 
 def get_user_book_links(session: Session, user_id: int):
         """Get all user book links belonging to user"""
@@ -97,7 +80,6 @@ def get_user_book_link(session: Session, user_id: int, book_id: str):
 
 def get_current_user_book_link(session: Session, user_id: int):
         """Gets the user book link of current book"""
-        # most recent session:
         current_book = get_current_book(session, user_id)
         print("CURB$", current_book)
         if not current_book:
@@ -165,17 +147,6 @@ def delete_book(session: Session, user_id: int, book_id: str):
                 raise HTTPException(status_code=404, detail="Book not found in user library")
         session.delete(book_to_delete)
         session.commit()
-   
-
-# def get_finished_books_by_year(session: Session, year: int):
-#     """Get all user_books that were finished in the year"""
-#     query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished", UserBookLinkInDB.finish_date.isnot(None), extract('year', UserBookLinkInDB.finish_date) == year )
-#     finished = session.exec(query).all()
-#     for book in finished:
-#         if book.finish_date and book.finish_date.year == 2024:
-#             print("yay!")
-#     return finished
-
     
 def get_book_progress(session: Session, user_id: int, book_id: str):
     """Gets the progress of book with book_id"""
@@ -190,7 +161,6 @@ def get_book_progress(session: Session, user_id: int, book_id: str):
 def add_book(session: Session, book: Book):
         """Add book to database"""
 
-        # if the book already exists, return the book
         existing_book = get_book_by_id(session, book.id)
         if existing_book:
                 return existing_book
@@ -252,14 +222,6 @@ async def get_google_book_by_id(google_id: str) -> Book:
 # --------- #
 #   GOALS   #
 # --------- #
-
-# def add_goal(session : Session, user: UserInDB, goal: GoalRequest):
-#     new_goal = GoalInDB(**goal.model_dump(),
-#                         user=user)
-#     session.add(new_goal)
-#     session.commit()
-#     session.refresh(new_goal)
-#     return new_goal
 
 def get_goal(session : Session, goal_id: int):
     """Get the user's goal for the given time period"""
@@ -412,7 +374,6 @@ def get_monthly_stats(session: Session, user_id: int, month: int, year: int):
     minutes = session.exec(minutes_query).first()
     pages_query = select(func.sum(DailyStatInDB.pages)).where(DailyStatInDB.user_id==user_id, extract('month', DailyStatInDB.y_m_d) == cur_month, extract('year', DailyStatInDB.y_m_d) == cur_year)
     pages = session.exec(pages_query).first()
-    # {minutes: 122, pages: 500}
     return {"minutes": minutes, "pages": pages}
 
 def get_chart_data(session: Session, user_id: int, period: str):

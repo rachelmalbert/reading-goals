@@ -2,10 +2,10 @@ import "../styles/Goals.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "../hooks";
 import { useState } from "react";
-import FormInput from "./FormInput";
-import ProgressCircle from "./ProgressCircle";
 import { yearMonthDay } from "../utils";
 import Popup from "./Popup";
+import FormInput from "./FormInput";
+import ProgressCircle from "./ProgressCircle";
 
 function EditGoalForm({ goal, setShowEditGoal }) {
   const api = useApi();

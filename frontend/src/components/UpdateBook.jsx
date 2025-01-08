@@ -1,11 +1,11 @@
 import "../styles/UpdateBook.css";
-import FormInput from "./FormInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi, useUser } from "../hooks";
 import { CurrentDateTime } from "../utils";
 import Stopwatch from "./Timer";
+import FormInput from "./FormInput";
 
 const CurrentBookCard = ({ user_book }) => {
   const { current_page } = user_book;
@@ -121,7 +121,6 @@ function UpdateBook({ user_book, setShowUpdatePopup, type }) {
     mutationFn: (newSession) => api.post("/sessions/add", newSession).then((response) => response.json()),
     onSuccess: () => {
       queryClient.invalidateQueries(["books", user.id]);
-      // navigate("/bookshelf");
     },
   });
 
@@ -162,7 +161,6 @@ function UpdateBook({ user_book, setShowUpdatePopup, type }) {
 
   const finishBook = (e) => {
     e.preventDefault();
-    // addDailyStat(e, time, dateTime, page_count);
     finishBookMutation.mutate();
     setShowFinishBookButton(false);
   };

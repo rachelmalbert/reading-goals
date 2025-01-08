@@ -5,7 +5,7 @@
 }
 
 .progress-ring {
-  transform: rotate(-90deg); /* Rotate to start the stroke from top */
+  transform: rotate(-90deg);
 }
 
 .progress-ring-background {

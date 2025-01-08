@@ -1,4 +1,3 @@
-/* Main Container for the Bookshelf */
 progress {
   width: 100%;
 }
@@ -62,19 +61,17 @@ progress {
   padding: 0px !important;
 }
 
-/* Button Hover and Active States */
 .progress-buttons .read-button:hover {
-  background-color: #6f7e4a; /* Darker green on hover */
-  transform: scale(1.05); /* Slight scaling effect */
+  background-color: #6f7e4a;
+  transform: scale(1.05);
 }
 
 .progress-buttons button:active {
-  transform: scale(0.98); /* Button shrinks slightly on click */
+  transform: scale(0.98);
 }
 
-/* Responsive Design for Smaller Screens */
 @media (max-width: 768px) {
   .in-progress-card {
-    width: 200px; /* Narrower cards on small screens */
+    width: 200px;
   }
 }

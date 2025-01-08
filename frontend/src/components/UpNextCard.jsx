@@ -1,8 +1,7 @@
+import "../styles/UpNextCard.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser, useApi } from "../hooks";
 import { useNavigate } from "react-router-dom";
-
-import "../styles/UpNextCard.css";
 
 function UpNextCard({ user_book }) {
   const navigate = useNavigate();

@@ -3,11 +3,11 @@ import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import jwt
+from jose import ExpiredSignatureError, JWTError, jwt
 from passlib.context import CryptContext
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from sqlmodel import SQLModel, Session, select
+from sqlmodel import Session, select
 import app.database as db
 from app.schema import(
     UserInDB,
@@ -39,17 +39,14 @@ class AccessTokenResponse(BaseModel):
 # ------------------------------------- #
 #              CREATE                   #
 # ------------------------------------- #
-#TODO: add response model that doesn't include sensitive info
 @auth_router.post("/register")
 def create_user(*, session: db_dependency, registration: UserRegistrationRequest):
     """Register a new user"""
 
-    #TODO: set hashed_password to actual hashed password
     new_user = UserInDB(
         **registration.model_dump(),
         hashed_password=pwd_context.hash(registration.password),
     )
-    # Make sure username doesn't already exist
     query = select(UserInDB).where(UserInDB.username==new_user.username)
     user = session.exec(query).first()
     if (user):
@@ -90,12 +87,11 @@ def get_access_token(*, session: db_dependency, form: OAuth2PasswordRequestForm 
 # ------------------------------------- #
 
 def authenticate_user(session: Session, form: OAuth2PasswordBearer):
-    # Try to get the UserInDB based on the username from the form
     user = session.exec(select(UserInDB).where(UserInDB.username == form.username)).first()
 
-    if not user: # user with the given username doesn't exist 
+    if not user:
         return False 
-    if not pwd_context.verify(form.password, user.hashed_password): # password is incorrect
+    if not pwd_context.verify(form.password, user.hashed_password): 
         return False
     return user
 
@@ -111,27 +107,10 @@ def get_current_user(session: db_dependency, token: Annotated[str, Depends(oauth
         user_id = payload.get('id')
         if username is None or user_id is None:
             raise HTTPException(status_code=401, detail="could not validate user")
-        # return User(user_id=user_id, username=username)
         user = session.get(UserInDB, user_id)
         return  user
-        # return {'username' : username, 'user_id' : user_id}
-    except: pass
-    # except JWTError:
-    #     raise HTTPException(status_code=401, detail="JWTError")
-    # except ExpiredSignatureError:
-    #     raise HTTPException(status_code=401, detail="expired signature")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="JWTError")
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="expired signature")
     
-   
-
-
-# Dependency example #
-# def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):
-#     return {"q": q, "skip": skip, "limit": limit}
-
-# @auth_router.get("/items/")
-# def read_items(commons: Annotated[dict, Depends(common_parameters)]):
-#     return commons
-
-# @auth_router.get("/users/")
-# def read_users(commons: Annotated[dict, Depends(common_parameters)]):
-#     return commons

@@ -1,9 +1,9 @@
+import "../styles/SearchPage.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser, useApi } from "../hooks";
 import { useState } from "react";
 import FormInput from "../components/FormInput";
-import "./SearchPage.css";
 
 function AddBook({ book }) {
   const api = useApi();
@@ -73,7 +73,7 @@ function SearchPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["search", searchQuery],
     queryFn: () => api.get(`/books/google/${searchQuery}`).then((response) => response.json()),
-    enabled: !!searchQuery, // Only run query if searchQuery is not empty
+    enabled: !!searchQuery,
   });
 
   return (
@@ -86,7 +86,7 @@ function SearchPage() {
         <div className="search-bar">
           <FormInput setter={setSearchQuery} />
           <button className="search-btn">
-            <i className="fas fa-search"></i> {/* Font Awesome "+" Icon */}
+            <i className="fas fa-search"></i>
           </button>
         </div>
       </div>

@@ -1,37 +1,32 @@
-/* Container for the cards */
 .totals-container {
   display: flex;
-  justify-content: space-between; /* Distribute space between cards */
+  justify-content: space-between;
   width: 100%;
   gap: 20px;
   height: 15%;
 }
 
-/* Individual card */
 .total-card {
-  display: flex; /* Flexbox for internal card content */
-  justify-content: space-between; /* Distribute content evenly */
-  align-items: center; /* Center content horizontally */
-  background-color: #d6c9b1; /* Soft beige for card background */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #d6c9b1;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  /* padding-left: 1rem;
-  padding-right: 1rem; */
   padding: 1rem;
   min-width: auto;
-  color: #8c6a4d; /* Muted terracotta for title */
+  color: #8c6a4d;
 }
 
 .title {
   font-size: 1em;
 }
 
-/* Minutes value styling */
 .amount {
   font-size: 1.5em;
   font-weight: 700;
-  color: #a69e69; /* Olive green for the value */
+  color: #a69e69;
 }
 
 .card-icon {
@@ -43,10 +38,8 @@
   width: 4rem;
 }
 
-/* Hover effect */
 .total-card:hover {
-  /* transform: translateY(-8px); */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
-  background-color: #8c6a4d; /* Change background to muted terracotta */
-  color: white !important; /* Change text to white on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  background-color: #8c6a4d;
+  color: white !important;
 }

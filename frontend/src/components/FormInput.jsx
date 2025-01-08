@@ -1,7 +1,6 @@
 import React from "react";
 
 const FormInput = ({ setter, ...props }) => {
-  // Every time the input is changed, set the new value and call the onChange function
   const handleChange = (e) => {
     if (setter) {
       setter(e.target.value.toLowerCase());

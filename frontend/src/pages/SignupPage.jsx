@@ -1,8 +1,8 @@
+import "../styles/SignupPage.css";
 import { useState } from "react";
 import { useAuth } from "../hooks";
 import FormInput from "../components/FormInput";
 import logo from "../assets/images/rg-logo.png";
-import "./SignupPage.css";
 
 function SignupPage() {
   const [username, setUsername] = useState("");
@@ -44,7 +44,6 @@ function SignupPage() {
         })
         .catch((error) => {
           console.log(error);
-          // Handle errors (both network and HTTP errors)
           setError("Username already taken");
         });
     }

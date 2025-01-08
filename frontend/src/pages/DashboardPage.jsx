@@ -1,9 +1,8 @@
-import "./DashboardPage.css";
-
+import "../styles/DashboardPage.css";
+import { useUser } from "../hooks";
 import Sessions from "../components/Sessions";
 import Totals from "../components/Totals";
 import { Goals } from "../components/Goals";
-import { useUser } from "../hooks";
 import NowReadingCard from "../components/NowReadingCard";
 import Statistics from "../components/Statistics";
 
@@ -25,13 +24,10 @@ function DashboardPage() {
             </div>
             <div className="bottom">
               <NowReadingCard></NowReadingCard>
-
               <Statistics></Statistics>
             </div>
           </div>
           <div className="right">
-            {/* <NowReadingCard></NowReadingCard> */}
-
             <Sessions></Sessions>
           </div>
         </div>

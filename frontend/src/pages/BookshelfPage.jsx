@@ -1,16 +1,16 @@
+import "../styles/BookshelfPage.css";
 import { useQuery } from "@tanstack/react-query";
 import { useUser, useApi } from "../hooks";
+import { Link } from "react-router-dom";
 import InProgressCard from "../components/InProgressCard";
 import UpNextCard from "../components/UpNextCard";
 import FinishedBookCard from "../components/FinishedBookCard";
-import "./BookshelfPage.css";
-import { Link } from "react-router-dom";
 
 function AddBookCard({ url }) {
   return (
     <div className="add-book-card">
       <div className="plus-icon">
-        <i className="fas fa-plus"></i> {/* Font Awesome "+" Icon */}
+        <i className="fas fa-plus"></i>
       </div>
       <div className="info">
         <Link to={url}>
@@ -56,7 +56,6 @@ function BookshelfPage() {
           </div>
           <div className="bookshelf-right">
             {/* Finished */}
-
             <h3>
               Finished
               <i className="fa-solid fa-square-check checkmark"></i>

@@ -1,10 +1,9 @@
+import "../styles/SigninPage.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInput";
 import { useAuth } from "../hooks";
-import "./SigninPage.css";
-
 import logo from "../assets/images/rg-logo.png";
+import FormInput from "../components/FormInput";
 
 function SigninPage() {
   const [username, setUsername] = useState("");
@@ -42,19 +41,10 @@ function SigninPage() {
           </div>
 
           <label htmlFor="username">Username</label>
-          <FormInput
-            type="text"
-            // name="username"
-            id="username"
-            setter={setUsername}
-          />
+          <FormInput type="text" id="username" setter={setUsername} />
           <label htmlFor="password">Password</label>
-          <FormInput
-            type="password"
-            // name="password"
-            id="password"
-            setter={setPassword}
-          />
+          <FormInput type="password" id="password" setter={setPassword} />
+
           {/* Forgot password link */}
           <div className="forgot-password-link">
             <a href="/forgot-password" className="forgot-password-text">
