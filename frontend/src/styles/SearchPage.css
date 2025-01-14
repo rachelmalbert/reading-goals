@@ -194,10 +194,17 @@ a:hover {
 
 @media (max-width: 768px) {
   .search-page {
-    padding: 15px;
+    padding: 1rem;
+    padding-top: 4rem;
   }
 
   .book-card {
     padding: 15px;
+  }
+
+  .search-btn {
+    height: 50px;
+    width: 50%;
+    justify-content: center;
   }
 }

@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f7efb67e.css",
+    "main.js": "/static/js/main.0311694e.js",
+    "static/media/rg-logo.png": "/static/media/rg-logo.aa2ee37822498c987702.png",
+    "static/media/pages.png": "/static/media/pages.170e11443de4697ae412.png",
+    "static/media/books.png": "/static/media/books.6705d98ed32c530a97ad.png",
+    "static/media/hourglass.png": "/static/media/hourglass.366fc590b3a7f6b7f61d.png",
+    "index.html": "/index.html",
+    "main.f7efb67e.css.map": "/static/css/main.f7efb67e.css.map",
+    "main.0311694e.js.map": "/static/js/main.0311694e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f7efb67e.css",
+    "static/js/main.0311694e.js"
+  ]
+}

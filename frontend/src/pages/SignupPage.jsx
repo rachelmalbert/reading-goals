@@ -1,5 +1,6 @@
 import "../styles/SignupPage.css";
 import { useState } from "react";
+import { useApi } from "../hooks";
 import { useAuth } from "../hooks";
 import FormInput from "../components/FormInput";
 import logo from "../assets/images/rg-logo.png";
@@ -10,6 +11,7 @@ function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const api = useApi();
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -18,11 +20,13 @@ function SignupPage() {
       setError("Passwords do not match");
       console.log({ error });
     } else {
-      fetch("http://localhost:8000/auth/register", {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: { "Content-Type": "application/json" },
-      })
+      api
+        .post("/auth/register", { username, password })
+        // fetch("http://localhost:8000/auth/register", {
+        //   method: "POST",
+        //   body: JSON.stringify({ username, password }),
+        //   headers: { "Content-Type": "application/json" },
+        // })
         .then((response) => {
           if (!response.ok) {
             throw new Error();
@@ -30,11 +34,12 @@ function SignupPage() {
           return response.json();
         })
         .then((registerData) => {
-          return fetch("http://localhost:8000/auth/token", {
-            method: "POST",
-            body: new URLSearchParams({ username, password }),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          });
+          return api.postForm("/auth/token", { username, password });
+          // return fetch("http://localhost:8000/auth/token", {
+          //   method: "POST",
+          //   body: new URLSearchParams({ username, password }),
+          //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          // });
         })
         .then((loginResponse) => {
           return loginResponse.json();
@@ -44,6 +49,7 @@ function SignupPage() {
         })
         .catch((error) => {
           console.log(error);
+          // Handle errors (both network and HTTP errors)
           setError("Username already taken");
         });
     }

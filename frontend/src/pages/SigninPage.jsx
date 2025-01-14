@@ -1,32 +1,32 @@
 import "../styles/SigninPage.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks";
+import { useAuth, useApi } from "../hooks";
 import logo from "../assets/images/rg-logo.png";
 import FormInput from "../components/FormInput";
 
 function SigninPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { login } = useAuth();
+  const api = useApi();
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:8000/auth/token", {
-      method: "POST",
-      body: new URLSearchParams({ username, password }),
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    const response = await api.postForm("/auth/token", { username, password });
 
     const tokenData = await response.json();
 
-    if (tokenData) {
+    if (tokenData.access_token) {
+      // console.log("TokenData:", tokenData);
       login(tokenData);
       console.log("Success login in:", tokenData);
       navigate("/dashboard");
     } else {
+      setError("Incorrect username or password");
       console.log("Error logging in");
     }
   };
@@ -64,6 +64,7 @@ function SigninPage() {
               </a>
             </p>
           </div>
+          <div className={`error-message ${error === "" ? "" : "error"}`}>{error}</div>
         </form>
       </div>
     </div>

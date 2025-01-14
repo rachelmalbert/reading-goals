@@ -43,3 +43,21 @@
   background-color: #8c6a4d;
   color: white !important;
 }
+
+@media (max-width: 768px) {
+  .total-card {
+    flex-direction: column;
+  }
+
+  .card-left {
+    text-align: center;
+  }
+
+  .card-icon {
+    scale: 80%;
+  }
+
+  .title {
+    line-height: 1rem;
+  }
+}

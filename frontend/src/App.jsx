@@ -19,6 +19,7 @@ const queryClient = new QueryClient();
 
 function Main() {
   const { isLoggedIn } = useAuth();
+
   if (isLoggedIn) {
     return (
       <Routes>

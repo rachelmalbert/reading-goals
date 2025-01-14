@@ -19,3 +19,10 @@
   height: 12rem;
   width: 8rem;
 }
+
+@media (max-width: 768px) {
+  .layout {
+    display: block;
+    overflow: scroll;
+  }
+}

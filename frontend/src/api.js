@@ -1,5 +1,6 @@
 const api = (token) => {
-  const baseUrl = "http://localhost:8000";
+  // const baseUrl = "http://localhost:8000";
+  const baseUrl = "https://zzsewbxcaahebc2xpdrp7r3xxy0gfrzr.lambda-url.us-east-2.on.aws";
 
   const headers = {
     "Content-Type": "application/json",

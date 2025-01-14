@@ -20,6 +20,15 @@ from app.schema import (
         TotalStatsResponse,
         GoalRequest
         )
+# DATABASE_URL = os.getenv('DB_CONNECTION_STRING')
+# Create the engine and database 
+
+# DATABASE_URL = "mysql+pymysql://admin:dbpassword@readinggoals-aws-database.ct0ke2y802rv.us-east-2.rds.amazonaws.com:3306/rg"
+
+
+# engine = create_engine(
+#     DATABASE_URL
+# )
 
 # Create the engine and database 
 engine = create_engine(

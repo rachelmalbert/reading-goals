@@ -69,13 +69,29 @@ function SearchResultCard({ book }) {
 function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const api = useApi();
+  const [error, setError] = useState("");
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["search", searchQuery],
-    queryFn: () => api.get(`/books/google/${searchQuery}`).then((response) => response.json()),
+    queryFn: () =>
+      api.get(`/books/google/${searchQuery}`).then((response) => {
+        if (!response.ok) {
+          console.log("ERRA");
+          setError("Error fetching from google api");
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          setError("");
+          return response.json();
+        }
+      }),
     enabled: !!searchQuery,
+    retry: false,
   });
+  // <div className={`error-message ${error === "" ? "" : "error"}`}>{error}</div>;
 
+  // if (isLoading) {
+  //   return <p className="loading">Loading...</p>;
+  // } else {
   return (
     <div className="search-page">
       <div className="sticky-section">
@@ -91,16 +107,11 @@ function SearchPage() {
         </div>
       </div>
 
-      {isLoading && <p className="loading">Loading...</p>}
-      {data && (
-        <div className="books-list">
-          {data["books"].map((book) => (
-            <SearchResultCard key={book.id} book={book} />
-          ))}
-        </div>
-      )}
+      {data && <div className="books-list">{data["books"] && data["books"].map((book) => <SearchResultCard key={book.id} book={book} />)}</div>}
+      <div className={`error-message ${error === "" ? "" : "error"}`}>{error}</div>
     </div>
   );
 }
+// }
 
 export default SearchPage;

@@ -125,3 +125,16 @@ p {
 .checkmark {
   padding-left: 1rem;
 }
+
+@media (max-width: 768px) {
+  .bookshelf-content {
+    flex-direction: column;
+  }
+  .bookshelf-left {
+    width: 100%;
+  }
+  .bookshelf-right {
+    width: 100%;
+    padding-top: 2rem;
+  }
+}

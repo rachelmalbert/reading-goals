@@ -10,13 +10,13 @@
 
 .progress-ring-background {
   fill: none;
-  stroke: #e6e6e6; /* Light grey background for the ring */
+  stroke: #e6e6e6; 
   stroke-width: 10;
 }
 
 .progress-ring-bar {
   fill: none;
-  stroke: #4caf50; /* Green color for the progress */
+  stroke: #4caf50; 
   stroke-width: 10;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s ease;
