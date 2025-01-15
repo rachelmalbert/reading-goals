@@ -1,7 +1,7 @@
 const api = (token) => {
   // const baseUrl = "http://localhost:8000";
   // const baseUrl = "https://zzsewbxcaahebc2xpdrp7r3xxy0gfrzr.lambda-url.us-east-2.on.aws";
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const headers = {
     "Content-Type": "application/json",
