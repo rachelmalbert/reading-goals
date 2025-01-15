@@ -1,6 +1,7 @@
 import calendar
 from collections import defaultdict
 from datetime import date, datetime, timedelta
+import os
 from fastapi import HTTPException
 import httpx
 from sqlmodel import Session, SQLModel, create_engine, select
@@ -31,10 +32,29 @@ from app.schema import (
 # )
 
 # Create the engine and database 
+# engine = create_engine(
+#     "sqlite:///app/database.db",
+#     echo=True,
+#     connect_args={"check_same_thread": False},
+# )
+
+if os.environ.get("DB_LOCATION") == "RDS":
+    username = os.environ.get("PG_USERNAME")
+    password = os.environ.get("PG_PASSWORD")
+    endpoint = os.environ.get("PG_ENDPOINT")
+    port = os.environ.get("PG_PORT")
+    db_url = f"postgresql://{username}:{password}@{endpoint}:{port}/{username}"
+    echo = False
+    connect_args = {}
+else:
+    db_url = "sqlite:///app/database.db"
+    echo = True
+    connect_args = {"check_same_thread": False}
+
 engine = create_engine(
-    "sqlite:///app/database.db",
-    echo=True,
-    connect_args={"check_same_thread": False},
+    db_url,
+    echo=echo,
+    connect_args=connect_args,
 )
 
 def create_db_and_tables():
