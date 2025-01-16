@@ -9,6 +9,7 @@ function SignupPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false); // New state for loading
   const [error, setError] = useState("");
   const { login } = useAuth();
   const api = useApi();
@@ -16,17 +17,14 @@ function SignupPage() {
   const onSubmit = (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       console.log({ error });
     } else {
       api
         .post("/auth/register", { username, password })
-        // fetch("http://localhost:8000/auth/register", {
-        //   method: "POST",
-        //   body: JSON.stringify({ username, password }),
-        //   headers: { "Content-Type": "application/json" },
-        // })
         .then((response) => {
           if (!response.ok) {
             throw new Error();
@@ -35,22 +33,19 @@ function SignupPage() {
         })
         .then((registerData) => {
           return api.postForm("/auth/token", { username, password });
-          // return fetch("http://localhost:8000/auth/token", {
-          //   method: "POST",
-          //   body: new URLSearchParams({ username, password }),
-          //   headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          // });
         })
         .then((loginResponse) => {
           return loginResponse.json();
         })
         .then((loginData) => {
           login(loginData);
+          setLoading(false);
         })
         .catch((error) => {
           console.log(error);
           // Handle errors (both network and HTTP errors)
           setError("Username already taken");
+          setLoading(false);
         });
     }
   };
@@ -81,6 +76,11 @@ function SignupPage() {
               </p>
             </div>
           </form>
+          {loading && (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
         </div>
       </div>
     </>

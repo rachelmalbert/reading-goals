@@ -37,6 +37,7 @@
 .signup-form-container {
   flex: 1;
   display: flex;
+  height: 70%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -154,7 +155,7 @@ button:hover {
     height: 250px;
   }
 
-  .login-form-container {
+  .signup-form-container {
     padding: 2rem;
   }
 }

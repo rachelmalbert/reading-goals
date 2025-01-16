@@ -33,7 +33,7 @@ async def search_google_books(*, query: str):
         google_api_url = f"https://www.googleapis.com/books/v1/volumes?q={query}"
 
         # Get 10 books from search query using google books api
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
                response = await client.get(google_api_url)
                if response.status_code != 200:
                      raise HTTPException(status_code=response.status_code, detail="Error fetching data from Google Books API")

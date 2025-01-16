@@ -9,12 +9,14 @@ function SigninPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // New state for loading
   const { login } = useAuth();
   const api = useApi();
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const response = await api.postForm("/auth/token", { username, password });
 
@@ -25,9 +27,11 @@ function SigninPage() {
       login(tokenData);
       console.log("Success login in:", tokenData);
       navigate("/dashboard");
+      setLoading(false);
     } else {
-      setError("Incorrect username or password");
+      setError("Incorrect username/password");
       console.log("Error logging in");
+      setLoading(false);
     }
   };
 
@@ -39,22 +43,25 @@ function SigninPage() {
             <div className="logo-title">Reading Goals</div>
             <img className="logo" src={logo} alt="Logo" />
           </div>
-
           <label htmlFor="username">Username</label>
           <FormInput type="text" id="username" setter={setUsername} />
           <label htmlFor="password">Password</label>
           <FormInput type="password" id="password" setter={setPassword} />
-
           {/* Forgot password link */}
           <div className="forgot-password-link">
             <a href="/forgot-password" className="forgot-password-text">
               Forgot Password?
             </a>
           </div>
-          <button className="sign-in-button" type="submit">
+          {loading && (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
+          {/* Show loading indicator */}
+          <button className="sign-in-button" type="submit" disabled={loading}>
             Sign In
           </button>
-
           {/* Sign-up link */}
           <div className="signup-link">
             <p className="signup-link-text">
