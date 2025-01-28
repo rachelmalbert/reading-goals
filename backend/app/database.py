@@ -21,45 +21,20 @@ from app.schema import (
         TotalStatsResponse,
         GoalRequest
         )
-# DATABASE_URL = os.getenv('DB_CONNECTION_STRING')
-# Create the engine and database 
 
-# DATABASE_URL = "mysql+pymysql://admin:dbpassword@readinggoals-aws-database.ct0ke2y802rv.us-east-2.rds.amazonaws.com:3306/rg"
-
-
-# engine = create_engine(
-#     DATABASE_URL
-# )
-
-# Create the engine and database 
-# engine = create_engine(
-#     "sqlite:///app/database.db",
-#     echo=True,
-#     connect_args={"check_same_thread": False},
-# )
-
-# if os.environ.get("DB_LOCATION") == "RDS":
-#     username = os.environ.get("PG_USERNAME")
-#     password = os.environ.get("PG_PASSWORD")
-#     endpoint = os.environ.get("PG_ENDPOINT")
-#     database = "readinggoals"
-#     port = os.environ.get("PG_PORT")
-#     db_url = f"postgresql://{username}:{password}@{endpoint}:{port}/{database}"
-#     echo = False
-#     connect_args = {}
-# else:
-#     db_url = "sqlite:///app/database.db"
-#     echo = True
-#     connect_args = {"check_same_thread": False}
-
-username = "postgres"
-password = "dbpassword"
-endpoint = "readinggoals-postgres.ct0ke2y802rv.us-east-2.rds.amazonaws.com"
-database = "readinggoals"
-port = 5432
-db_url = f"postgresql://{username}:{password}@{endpoint}:{port}/{database}"
-echo = False
-connect_args = {}
+if os.environ.get("DB_LOCATION") == "RDS":
+    username = os.environ.get("PG_USERNAME")
+    password = os.environ.get("PG_PASSWORD")
+    endpoint = os.environ.get("PG_ENDPOINT")
+    database = os.environ.get("DATABASE_NAME")
+    port = os.environ.get("PG_PORT")
+    db_url = f"postgresql://{username}:{password}@{endpoint}:{port}/{database}"
+    echo = False
+    connect_args = {}
+else:
+    db_url = "sqlite:///app/database.db"
+    echo = True
+    connect_args = {"check_same_thread": False}
 
 engine = create_engine(
     db_url,

@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  overflow: hidden;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -11,11 +12,23 @@
   width: 30%;
 }
 
+.now-reading-container h2 {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
 .page-progress {
   font-size: 1.1rem;
   color: #555;
 }
+.empty-book-cover {
+  max-width: 150px;
+  width: 50%;
+}
 
+.now-reading-container .add-book-card {
+  height: 100%;
+}
 .continue-btn {
   background-color: #4caf50;
   color: #fff;
@@ -41,5 +54,9 @@
 @media (max-width: 768px) {
   .now-reading-container {
     width: 100%;
+  }
+
+  .empty-book-cover {
+    width: 25%;
   }
 }

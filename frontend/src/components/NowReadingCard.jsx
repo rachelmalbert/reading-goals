@@ -1,25 +1,37 @@
 import "../styles/NowReadingCard.css";
 import { useQuery } from "@tanstack/react-query";
 import { useApi, useUser } from "../hooks";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import UpdateBook from "./UpdateBook";
 import Popup from "./Popup";
+import emptyBook from "../assets/images/empty-book.png";
 
 function AddBookCard({ url }) {
+  const navigate = useNavigate();
+
+  const onClick = (e) => {
+    e.preventDefault();
+    navigate("/bookshelf");
+  };
+
   return (
+    // <div className="now-reading-container">
+    //   <h2>Now Reading</h2>
+    //   <div className="add-book-card">
+    //     <Link to={url}>
+    //       <div>Add Book</div> <i className="fas fa-plus"></i>
+    //     </Link>
+    //   </div>
+    // </div>
     <div className="now-reading-container">
       <h2>Now Reading</h2>
-      <div className="add-book-card">
-        <div className="plus-icon">
-          <i className="fas fa-plus"></i>
-        </div>
-        <div className="info">
-          <Link to={url}>
-            <button className="add-book-button">Add Book</button>
-          </Link>
-        </div>
-      </div>
+      {/* <div className="empty-book-cover"></div> */}
+      <img src={emptyBook} alt="Book Cover" className="empty-book-cover" />
+      <div className="page-progress">{/* Page {currentUserBookLink.user_book_link.current_page} of {currentUserBookLink.book.page_count} */}</div>
+      <button onClick={onClick} className="continue-btn">
+        Add Book
+      </button>
     </div>
   );
 }

@@ -196,6 +196,7 @@ a:hover {
   .search-page {
     padding: 1rem;
     padding-top: 4rem;
+    gap: 1rem;
   }
 
   .book-card {
@@ -206,5 +207,42 @@ a:hover {
     height: 50px;
     width: 50%;
     justify-content: center;
+  }
+
+  .search-bar {
+    width: 60%;
+  }
+
+  .books-list {
+    padding: 0rem;
+  }
+
+  .search-book-card {
+    padding: 0rem;
+    border: 1px solid gray;
+  }
+
+  .search-book-card img {
+    scale: 70%;
+  }
+
+  .book-info {
+    justify-content: center;
+  }
+
+  .add-book-btn {
+    width: 100%;
+  }
+
+  .book-title {
+    font-size: 1rem;
+  }
+
+  .book-author {
+    font-size: 0.8rem;
+  }
+
+  .book-description {
+    font-size: 0.7rem;
   }
 }

@@ -18,6 +18,11 @@
 .book-cover-img {
   height: 12rem;
   width: 8rem;
+  display: flex;
+  align-self: center;
+}
+
+.book-cover-img:hover {
 }
 
 @media (max-width: 768px) {

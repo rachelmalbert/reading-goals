@@ -2,6 +2,7 @@ import "../styles/DashboardPage.css";
 import { useUser } from "../hooks";
 import Sessions from "../components/Sessions";
 import Totals from "../components/Totals";
+import NavBar from "../components/Navbar";
 import { Goals } from "../components/Goals";
 import NowReadingCard from "../components/NowReadingCard";
 import Statistics from "../components/Statistics";
@@ -12,6 +13,7 @@ function DashboardPage() {
   return (
     <>
       <div className="dashboard">
+        {/* <NavBar></NavBar> */}
         <div className="welcome-back-container">
           <div className="welcome-back">Welcome Back,</div>
           <div className="name">{user.username}</div>
@@ -27,9 +29,7 @@ function DashboardPage() {
               <Statistics></Statistics>
             </div>
           </div>
-          <div className="right">
-            <Sessions></Sessions>
-          </div>
+          <Sessions></Sessions>
         </div>
       </div>
     </>

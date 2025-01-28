@@ -45,10 +45,15 @@ function Sessions() {
     enabled: true,
   });
 
+  if (dates) {
+    console.log(dates);
+    console.log(dates.length);
+  }
+
   return (
     <>
       {dates && (
-        <div className="reading-sessions-container">
+        <div className={`reading-sessions-container-${Object.keys(dates).length === 0 ? "invisible" : "visible"}`}>
           <h3 className="sessions-title">Reading Sessions</h3>
           <div className="sessions">
             {Object.entries(dates).map(([date, sessions]) => (

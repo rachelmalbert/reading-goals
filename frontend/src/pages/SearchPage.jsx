@@ -53,7 +53,7 @@ function SearchResultCard({ book }) {
         <div className="book-description-container">
           <div className={`book-description ${isExpanded ? "expanded" : ""}`}>
             {book.description && book.description}
-            {!book.description && <>No Description</>}
+            {/* {!book.description && <>No Description</>} */}
           </div>
           {book.description && (
             <p className="read-more-button" onClick={toggleDescription}>

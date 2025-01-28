@@ -1,34 +1,80 @@
 import "../styles/BookshelfPage.css";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useUser, useApi } from "../hooks";
-import { Link } from "react-router-dom";
-import InProgressCard from "../components/InProgressCard";
-import UpNextCard from "../components/UpNextCard";
-import FinishedBookCard from "../components/FinishedBookCard";
+import { Link, useNavigate } from "react-router-dom";
+// import InProgressCard from "../components/InProgressCard";
+// import UpNextCard from "../components/UpNextCard";
+import UpNextContainer from "../components/UpNextContainer";
+import InProgressContainer from "../components/InProgressContainer";
+import FinishedContainer from "../components/FinishedContainer";
 
-function AddBookCard({ url }) {
-  return (
-    <div className="add-book-card">
-      <div className="plus-icon">
-        <i className="fas fa-plus"></i>
-      </div>
-      <div className="info">
-        <Link to={url}>
-          <button className="add-book-button">Add Book</button>
-        </Link>
-      </div>
-    </div>
-  );
-}
+// function AddBookCard({ url }) {
+//   return (
+//     <div className="add-book-card">
+//       <Link to={url}>
+//         <div>Add Book</div> <i className="fas fa-plus"></i>
+//       </Link>
+//     </div>
+//   );
+// }
+
+// function UpNextContainer({ bookList }) {
+//   return (
+//     <div className="up-next-container">
+//       <h3>Up Next</h3>
+//       <div className="bookshelf-up-next">
+//         <AddBookCard url="/search"></AddBookCard>
+//         {bookList.map((user_book) => (
+//           <UpNextCard key={user_book["book"].id} user_book={user_book}></UpNextCard>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// function InProgressContainer({ bookList }) {
+//   return (
+//     <div className="in-progress-container">
+//       <h3>In Progress</h3>
+//       <div className="bookshelf-in-progress">
+//         {bookList.map((user_book) => (
+//           <InProgressCard key={user_book["book"].id} user_book={user_book}></InProgressCard>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// function FinishedContainer({ bookList }) {
+//   return (
+//     <div className="finished-container">
+//       <h3>
+//         Finished
+//         <i className="fa-solid fa-square-check checkmark"></i>
+//       </h3>
+//       {bookList.map((user_book) => (
+//         <FinishedBookCard key={user_book["book"].id} user_book={user_book}></FinishedBookCard>
+//       ))}
+//     </div>
+//   );
+// }
 
 function BookshelfPage() {
   const user = useUser();
   const api = useApi();
+  const navigate = useNavigate();
 
   const { data } = useQuery({
     queryKey: ["books", user.id],
     queryFn: () => api.get("/user_book/books").then((response) => response.json()),
   });
+
+  useEffect(() => {
+    if (data && data.length === 0) {
+      navigate("/search");
+    }
+  }, [data, navigate]);
 
   if (data) {
     const inProgressBooks = data.filter((book) => book.status === "in progress");
@@ -37,38 +83,20 @@ function BookshelfPage() {
     return (
       <div className="bookshelf">
         <div className="bookshelf-content">
+          <h2 className="mobile-title">My Bookshelf</h2>
           <div className="bookshelf-left">
-            {/* In Progress */}
-            <h3>In Progress</h3>
-            <div className="bookshelf-in-progress">
-              {inProgressBooks.map((user_book) => (
-                <InProgressCard key={user_book["book"].id} user_book={user_book}></InProgressCard>
-              ))}
-            </div>
-            {/* Up Next */}
-            <h3>Up Next</h3>
-            <div className="bookshelf-up-next">
-              <AddBookCard url="/search"></AddBookCard>
-              {upNextBooks.map((user_book) => (
-                <UpNextCard key={user_book["book"].id} user_book={user_book}></UpNextCard>
-              ))}
-            </div>
+            <InProgressContainer bookList={inProgressBooks}></InProgressContainer>
+            <UpNextContainer bookList={upNextBooks}></UpNextContainer>
           </div>
           <div className="bookshelf-right">
-            {/* Finished */}
-            <h3>
-              Finished
-              <i className="fa-solid fa-square-check checkmark"></i>
-            </h3>
-            {finishedBooks.map((user_book) => (
-              <FinishedBookCard key={user_book["book"].id} user_book={user_book}></FinishedBookCard>
-            ))}
+            <FinishedContainer bookList={finishedBooks}></FinishedContainer>
           </div>
         </div>
       </div>
     );
+    // }
   } else {
-    return <AddBookCard url="/search"></AddBookCard>;
+    return;
   }
 }
 export default BookshelfPage;
