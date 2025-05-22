@@ -65,19 +65,21 @@ function BookshelfPage() {
   const api = useApi();
   const navigate = useNavigate();
 
-  const { data } = useQuery({
-    queryKey: ["books", user.id],
-    queryFn: () => api.get("/user_book/books").then((response) => response.json()),
-  });
+  const {
+  data,
+  isLoading,
+  isFetching,
+} = useQuery({
+  queryKey: ["books", user.id],
+  queryFn: () => api.get("/user_book/books").then((response) => response.json()),
+});
 
-  console.log("data", data)
-
-
-  useEffect(() => {
-    if (data && data.length === 0) {
-      navigate("/search");
-    }
-  }, [data]);
+useEffect(() => {
+  // Wait until data is fetched
+  if (!isLoading && !isFetching && data && data.length === 0) {
+    navigate("/search");
+  }
+}, [data, isLoading, isFetching]);
 
   if (data && data.length > 0) {
     const inProgressBooks = data.filter((book) => book.status === "in progress");

@@ -74,7 +74,8 @@ def get_current_book(session: db_dependency, user: user_dependency):
     for sesh in sessions:
            if sesh.book_id in in_progress:
                   current_sessions.append(sesh)
-
+    if len(current_sessions) == 0:
+           return None
     most_recent = current_sessions[0]
     current_book = db.get_book_by_id(session, most_recent.book_id)
     book_progress = db.get_book_progress(session, user.id, most_recent.book_id)

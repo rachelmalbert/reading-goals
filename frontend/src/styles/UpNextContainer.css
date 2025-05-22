@@ -5,7 +5,7 @@
   gap: 1rem;
   flex-direction: column;
   height: 100%;
-  border: 2px solid blue;
+  /* border: 2px solid blue; */
 }
 
 .up-next-list {

@@ -25,6 +25,8 @@
 .book-cover-img:hover {
 }
 
+
+
 @media (max-width: 768px) {
   .layout {
     display: block;

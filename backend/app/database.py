@@ -69,9 +69,12 @@ def get_current_book(session: Session, user_id: int):
       for sesh in sessions:
             if sesh.book_id in in_progress:
                   current_sessions.append(sesh)
-      most_recent = current_sessions[0]
-      current_book = get_book_by_id(session, most_recent.book_id)
-      return current_book
+      if len(current_sessions) > 0:
+        most_recent = current_sessions[0]
+        current_book = get_book_by_id(session, most_recent.book_id)
+        return current_book
+      else: 
+            return None
 
 def get_user_book_links(session: Session, user_id: int):
         """Get all user book links belonging to user"""
@@ -104,11 +107,18 @@ def get_current_user_book_link(session: Session, user_id: int):
         else:
                raise HTTPException(status_code=404, detail="User Book Link not found")
 
-def get_finished_books(session: Session):
+def get_finished_books(session: Session, user_id: int):
     """Get finished books"""
-    query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished")
-    finished = session.exec(query).all()
-    return finished
+    user_books = get_user_book_links(session, user_id)
+    res =[]
+    for book in user_books:
+          if book.status == "finished":
+                res.append(book)
+    return res
+
+#     query = select(UserBookLinkInDB).where(UserBookLinkInDB.status=="finished")
+#     finished = session.exec(query).all()
+#     return finished
 
 def start_book(session: Session, user_id: int, book_id: str):
         """Start reading book"""
@@ -248,9 +258,12 @@ def get_goal_progress(session: Session, user_id: int, goal_id: int):
     cur_year = datetime.now().year
     cur_month = datetime.now().month
     if goal.type == "books":
-        finished = get_finished_books(session)
+        finished = get_finished_books(session, user_id)
+        print("FINN", finished)
         if goal.period == "year":
-              return len([book for book in finished if book.finish_date.year == cur_year])
+              res = len([book for book in finished if book.finish_date.year == cur_year])
+        #       print("heyo", res[0].minutes_spent)
+              return res
         if goal.period == "month":
               return len([book for book in finished if book.finish_date.month == cur_month and book.finish_date.year == cur_year])         
     if goal.period == "month":

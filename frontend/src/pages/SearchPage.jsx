@@ -15,7 +15,7 @@ function AddBook({ book }) {
     mutationFn: () => api.post(`/user_book/checkout/${book.id}`, book.id).then((response) => response.json()),
     onSuccess: () => {
       console.log("Book checked out successfully!");
-      queryClient.invalidateQueries(["books", user.id]);
+      // queryClient.invalidateQueries(["books", user.id]);
       navigate("/bookshelf");
     },
   });

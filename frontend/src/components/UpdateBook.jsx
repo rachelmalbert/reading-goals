@@ -70,7 +70,7 @@ function UpdateForm({ addSession, showFinishBookButton, finishBook, error }) {
 }
 
 function ReadForm({ addSession, showFinishBookButton, finishBook }) {
-  const [time, setTime] = useState(3900);
+  const [time, setTime] = useState(0);
   const [curPage, setCurPage] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 

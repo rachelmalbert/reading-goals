@@ -68,6 +68,10 @@ function GoalCard({ goal }) {
     queryFn: () => api.get(`/goals/progress/${goal.id}`).then((response) => response.json()),
   });
 
+  if(progress){
+    console.log(progress)
+  }
+
   const handleEditIconClick = (event) => {
     event.preventDefault();
     setShowEditGoal(true);
