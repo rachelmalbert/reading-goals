@@ -26,9 +26,9 @@ function InProgressCard({ user_book }) {
 
   return (
     <>
-      <div key={user_book.key} className="in-progress-card" onClick={() => setShowBookInfo(true)}>
+      <div key={user_book.key} className="in-progress-card" >
         <div className="overlay">
-          <i onClick={handleEditIconClick} className="fas fa-edit edit-icon"></i>
+          <i onClick={handleEditIconClick} className="fas fa-trash edit-icon"></i>
         </div>
         <img className="book-cover-img" src={user_book["book"].cover_url}></img>
         <div className="info">

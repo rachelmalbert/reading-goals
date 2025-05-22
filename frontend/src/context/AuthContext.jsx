@@ -14,12 +14,38 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      storeToken(token);
-    } else {
-      clearToken();
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiryTime = payload.exp * 1000; 
+      const now = Date.now();
+      const timeUntilExpiry = expiryTime - now;
+
+      if (timeUntilExpiry <= 0) {
+        console.log("Token already expired");
+        clearToken();
+        return;
+      }
+
+      console.log("Token is valid, storing it");
+      storeToken(token); // store the full token
+
+      const logoutTimeout = setTimeout(() => {
+        console.log("Token expired — auto logging out");
+        clearToken();
+        logout();
+      }, timeUntilExpiry);
+
+      return () => clearTimeout(logoutTimeout);
+
+    } catch (e) {
+      console.error("Invalid token format:", e);
+      clearToken(); // Token is invalid or can't be decoded
     }
   }, [token]);
+
+
 
   const login = (tokenData) => {
     setToken(tokenData.access_token);
@@ -27,6 +53,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    clearToken();
     setToken(null);
     navigate("/signin");
   };

@@ -70,13 +70,16 @@ function BookshelfPage() {
     queryFn: () => api.get("/user_book/books").then((response) => response.json()),
   });
 
+  console.log("data", data)
+
+
   useEffect(() => {
     if (data && data.length === 0) {
       navigate("/search");
     }
-  }, [data, navigate]);
+  }, [data]);
 
-  if (data) {
+  if (data && data.length > 0) {
     const inProgressBooks = data.filter((book) => book.status === "in progress");
     const upNextBooks = data.filter((book) => book.status === "up next");
     const finishedBooks = data.filter((book) => book.status === "finished").reverse();
@@ -96,7 +99,7 @@ function BookshelfPage() {
     );
     // }
   } else {
-    return;
+    // navigate("/search");
   }
 }
 export default BookshelfPage;

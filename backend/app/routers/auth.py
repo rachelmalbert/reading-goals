@@ -21,7 +21,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 #TODO: store key in os environment
 JWT_KEY = os.environ.get("JWT_KEY", default="insecure-jwt-key-for-dev")
 JWT_ALG = "HS256"
-JWT_DURATION = 3600
+JWT_DURATION = 3600 # 1 hour until token expires (auto logout)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")

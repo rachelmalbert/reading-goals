@@ -8,9 +8,6 @@ function AddBookCard({ url }) {
   const navigate = useNavigate();
   return (
     <div className="add-book-card">
-      <div className="overlay">
-        <i onClick={handleEditIconClick} className="fas fa-edit edit-icon"></i>
-      </div>
       <div>
         <i className="fas fa-plus"></i>
       </div>

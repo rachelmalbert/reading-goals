@@ -87,11 +87,7 @@ function SearchPage() {
     enabled: !!searchQuery,
     retry: false,
   });
-  // <div className={`error-message ${error === "" ? "" : "error"}`}>{error}</div>;
 
-  // if (isLoading) {
-  //   return <p className="loading">Loading...</p>;
-  // } else {
   return (
     <div className="search-page">
       <div className="sticky-section">
