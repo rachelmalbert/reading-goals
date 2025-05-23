@@ -171,6 +171,7 @@ def delete_book(session: Session, user_id: int, book_id: str):
                 raise HTTPException(status_code=404, detail="Book not found in user library")
         session.delete(book_to_delete)
         session.commit()
+        return book_to_delete
     
 def get_book_progress(session: Session, user_id: int, book_id: str):
     """Gets the progress of book with book_id"""
@@ -321,22 +322,26 @@ def add_session(session: Session, user_id: int, new_session: SessionRequest):
 
        return add_session
 
-def get_sessions(session: Session, user_id: int):
-       """Gets all reading sessions belonging to user"""
-       query = select(SessionInDB).where(SessionInDB.user_id==user_id).order_by(desc(SessionInDB.created_at))
-       sessions = session.exec(query).all()
-       return sessions
+def delete_session(session: Session, session_id: int):
+      """Deletes the session with session_id"""
+      query = select(SessionInDB).where(SessionInDB.id==session_id)
+      session_to_delete = session.exec(query).first()
+      if session_to_delete is None:
+            raise HTTPException(400, "No session found")
+      session.delete(session_to_delete)
+      session.commit()
+      return {"Session deleted": session_to_delete}
+      
 
-def get_sessions_by_date(session: Session, user_id: int):
-       """Gets all reading sessions belonging to user by date"""
-       query = select(SessionInDB).where(SessionInDB.user_id==user_id).order_by(desc(SessionInDB.created_at))
-       sessions = session.exec(query).all()
-       # {date: [sessions]}
-       sessions_by_date = defaultdict(list)
-       for session in sessions:
-        session_date = session.created_at
-        sessions_by_date[session_date].append(session)
-       return sessions_by_date
+def get_sessions(session: Session, user_id: int, book_id: int = None):
+       """Gets all reading sessions belonging to user with optional book_id filter"""
+       if book_id is None:
+             query = select(SessionInDB).where(SessionInDB.user_id==user_id).order_by(desc(SessionInDB.created_at))
+             sessions = session.exec(query).all()
+       else:
+             query = select(SessionInDB).where(SessionInDB.user_id==user_id, SessionInDB.book_id==book_id)
+             sessions = session.exec(query).all()
+       return sessions
 
 # --------- #
 #   STATS   #

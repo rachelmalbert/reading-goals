@@ -49,7 +49,7 @@ function InProgressCard({ user_book }) {
         </Popup>
       </div>
       <Popup isOpen={showBookInfo} onClose={() => setShowBookInfo(false)}>
-        <BookInfo user_book={user_book}></BookInfo>
+        <BookInfo setShowBookInfo={setShowBookInfo} user_book={user_book}></BookInfo>
         {/* <EditGoalForm goal={goal} setShowEditGoal={setShowEditGoal}></EditGoalForm> */}
       </Popup>
     </>

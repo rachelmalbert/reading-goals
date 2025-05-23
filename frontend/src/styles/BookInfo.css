@@ -80,7 +80,6 @@
   align-self: center;
   background-color: red;
   color: white;
-  width: 20%;
   padding: 10px;
   border: none;
   cursor: pointer;
@@ -100,6 +99,7 @@
   margin-top: 10px;
   padding: 10px;
   background-color: #f9f9f9;
+  justify-items: center;
   border: 1px solid #ccc;
   border-radius: 5px;
 }

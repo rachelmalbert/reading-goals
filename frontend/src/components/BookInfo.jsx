@@ -1,13 +1,27 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser, useApi} from "../hooks"
 import "../styles/BookInfo.css";
 
 import React, { useState } from "react";
 
 // Simple BookInfo Component
-const BookInfo = ({ user_book }) => {
+const BookInfo = ({ user_book, setShowBookInfo }) => {
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const queryClient = useQueryClient();
+  const user = useUser();
+  const api = useApi();
+
+  console.log(user_book.book)
 
   const author = user_book.authors?.[0] || "Unknown Author";
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api.del(`/user_book/delete/${user_book.book.id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["books", user.id]);
+    },
+  });
 
   // Function to confirm deletion
   const handleDelete = () => {
@@ -20,9 +34,12 @@ const BookInfo = ({ user_book }) => {
 
   // Handle the actual deletion
   const confirmDelete = () => {
+    // TODO: delete book and sessions from library
     // onDelete(book.id);
     // Call the onDelete function passed down as prop
     setShowDeletePrompt(false);
+    setShowBookInfo(false);
+    deleteMutation.mutate();
   };
 
   // Cancel the delete action

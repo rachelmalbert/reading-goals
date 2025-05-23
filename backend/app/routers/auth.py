@@ -18,7 +18,6 @@ from app.schema import(
 
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-#TODO: store key in os environment
 JWT_KEY = os.environ.get("JWT_KEY", default="insecure-jwt-key-for-dev")
 JWT_ALG = "HS256"
 JWT_DURATION = 3600 # 1 hour until token expires (auto logout)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
@@ -26,6 +27,18 @@ def add_session(session: db_dependency, user: user_dependency, new_session: Sess
 # ------------------------------------- #
 @sessions_router.get("")
 def get_sessions(session: db_dependency, user: user_dependency):
-       """Get all user reading sessions"""
-       sessions = db.get_sessions_by_date(session, user.id)
-       return sessions
+       """Get all user reading sessions in the form {date: [sessions]}"""
+       sessions = db.get_sessions(session, user.id)
+       sessions_by_date = defaultdict(list)
+       for session in sessions:
+        session_date = session.created_at
+        sessions_by_date[session_date].append(session)
+       return sessions_by_date
+    #    sessions = db.get_sessions_by_date(session, user.id)
+    #    return sessions
+
+# ------------------------------------- #
+#              DELETE                   #
+# ------------------------------------- #
+
+

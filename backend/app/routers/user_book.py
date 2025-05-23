@@ -109,3 +109,20 @@ def start_reading(session: db_dependency, user: user_dependency, book_id: str):
         if updated is None:
                 return {"error": "Book link not found or failed to update."}, 404
         return updated
+
+
+# ------------------------------------- #
+#              DELETE                   #
+# ------------------------------------- #
+@user_book_router.delete("/delete/{book_id}")
+def delete_book(session: db_dependency, user: user_dependency, book_id: str):
+       """Delete the user book from library"""
+       # First, delete all the reading sessions related to that book
+       sessions_to_delete = db.get_sessions(session, user.id, book_id=book_id)
+       for sesh in sessions_to_delete:
+              db.delete_session(session, sesh.id)
+
+       # Then, delete the book from the user's library
+       deleted_book = db.delete_book(session, user.id, book_id)
+       return deleted_book
+

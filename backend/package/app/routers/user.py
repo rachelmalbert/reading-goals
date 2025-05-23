@@ -4,7 +4,6 @@ from sqlmodel import Session
 from app import database as db
 from app.schema import (
     UserInDB,
-    BookInDB
 )
 from app.routers.auth import get_current_user
 
@@ -27,8 +26,3 @@ def get_self(user: user_dependency):
 #              DELETE                   #
 # ------------------------------------- #
 
-@user_router.delete("/delete/{book_id}", response_model=list[BookInDB])
-def checkin_book(session: db_dependency, user: user_dependency, book_id: str):
-        """Deletes book with book_id from user library"""
-        db.delete_book(session, user.id, book_id)
-        return user.books

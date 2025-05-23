@@ -27,6 +27,5 @@ def get_total_stats(session: db_dependency, user: user_dependency):
 @stats_router.get("/{period}")
 def get_stats(session: db_dependency, user: user_dependency, period: str):
     """Get  stats for user"""
-    # date = datetime.now()
     chartData = db.get_chart_data(session, user.id, period)
     return chartData
