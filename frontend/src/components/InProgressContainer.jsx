@@ -27,10 +27,13 @@ function InProgressCard({ user_book }) {
   return (
     <>
       <div key={user_book.key} className="in-progress-card" >
-        <div className="overlay">
-          <i onClick={handleEditIconClick} className="fas fa-trash edit-icon"></i>
-        </div>
+        
+        <div onClick={handleEditIconClick} className="book-cover-img">
+          <div className="overlay">
+            <i  className="fas fa-trash edit-icon"></i>
+          </div>
         <img className="book-cover-img" src={user_book["book"].cover_url}></img>
+        </div>
         <div className="info">
           <div className="progress">
             <progress value={prev_page} max={page_count}></progress>

@@ -23,6 +23,9 @@
 }
 
 .book-cover-img:hover {
+  z-index: 100000;
+  opacity: 1;
+
 }
 
 
