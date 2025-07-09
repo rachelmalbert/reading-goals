@@ -16,19 +16,10 @@ function AddBookCard({ url }) {
   };
 
   return (
-    // <div className="now-reading-container">
-    //   <h2>Now Reading</h2>
-    //   <div className="add-book-card">
-    //     <Link to={url}>
-    //       <div>Add Book</div> <i className="fas fa-plus"></i>
-    //     </Link>
-    //   </div>
-    // </div>
     <div className="now-reading-container">
       <h2>Now Reading</h2>
-      {/* <div className="empty-book-cover"></div> */}
       <img src={emptyBook} alt="Book Cover" className="empty-book-cover" />
-      <div className="page-progress">{/* Page {currentUserBookLink.user_book_link.current_page} of {currentUserBookLink.book.page_count} */}</div>
+      <div className="page-progress"></div>
       <button onClick={onClick} className="continue-btn">
         Add Book
       </button>
@@ -67,7 +58,7 @@ function NowReadingCard() {
           <h2>Now Reading</h2>
           <img src={currentUserBookLink.book.cover_url} alt="Book Cover" className="current-book-cover" />
           <div className="page-progress">
-            Page {currentUserBookLink.user_book_link.current_page} of {currentUserBookLink.book.page_count}
+            Page {currentUserBookLink.current_page} of {currentUserBookLink.book.page_count}
           </div>
           <button onClick={handleClick} className="continue-btn">
             Continue

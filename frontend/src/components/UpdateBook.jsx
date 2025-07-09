@@ -8,7 +8,8 @@ import Stopwatch from "./Timer";
 import FormInput from "./FormInput";
 
 const CurrentBookCard = ({ user_book }) => {
-  const { current_page } = user_book;
+  console.log("userbook", user_book)
+  const current_page  = user_book.current_page;
   const { title, page_count, cover_url } = user_book["book"];
 
   return (
@@ -77,7 +78,16 @@ function ReadForm({ addSession, showFinishBookButton, finishBook }) {
   const handleAddSession = (event) => {
     event.preventDefault();
     let mins = Math.floor(time / 60);
-    addSession(event, mins, CurrentDateTime(), curPage);
+
+    let today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    today = `${year}-${month}-${day}`;
+
+    // addSession(event, mins, CurrentDateTime(), curPage);
+    addSession(event, mins, today, curPage);
+
   };
 
   const handleFinishBook = (e) => {

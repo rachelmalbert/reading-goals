@@ -60,8 +60,10 @@ function Sessions() {
               <div className="date-section" key={date}>
                 <h4 className="session-date">{formatDate(date)}</h4>
                 <ul className="session-list">
-                  {sessions.map((session) => (
-                    <SessionItem key={session.id} session={session}></SessionItem>
+                  {[...sessions]
+                  .sort((a, b) => b.id - a.id) // Sort sessions by ascending ID
+                  .map((session) => (
+                    <SessionItem key={session.id} session={session} />
                   ))}
                 </ul>
               </div>

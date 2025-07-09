@@ -98,12 +98,13 @@ def get_user_book_link(session: Session, user_id: int, book_id: str):
 def get_current_user_book_link(session: Session, user_id: int):
         """Gets the user book link of current book"""
         current_book = get_current_book(session, user_id)
-        print("CURB$", current_book)
         if not current_book:
               return None
-        current_user_book_link = get_user_book_link(session, user_id, current_book.id)
-        if current_user_book_link:
-            return {"user_book_link": current_user_book_link, "book": current_user_book_link.book}
+        link = get_user_book_link(session, user_id, current_book.id)
+        if link:
+        #     return {"user_book_link": current_user_book_link, "book": current_user_book_link.book}
+              return BookResponse(book=link.book, status=link.status, minutes_spent=link.minutes_spent, authors=link.book.authors, start_date=link.start_date, current_page=link.current_page, finish_date=link.finish_date)
+
         else:
                raise HTTPException(status_code=404, detail="User Book Link not found")
 
